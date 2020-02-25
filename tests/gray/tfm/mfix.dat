@@ -1,0 +1,278 @@
+########################################################################
+#  steay state heat transfer (p1 radiation)                            #
+# Author:  V. Kotteda                                  Date:  3-06-19  #
+########################################################################
+#_______________________________________________________________________
+# RUN CONTROL SECTION
+
+  Run_name    = 'sbc-Rad'
+  Description = 'Spouted Bed Combustor Simple'
+  Units       = 'cgs'
+  Run_type    = 'new'
+
+  time  = 0.0
+  max_nit = 200
+
+  energy_eq = .True.
+
+  species_eq(0) = .False.
+  species_eq(1) = .False.
+  species_eq(2) = .False.
+
+  momentum_z_eq(1) = .False.
+  momentum_z_eq(2) = .False.
+  momentum_z_eq(0) = .False.
+
+  call_usr = .True.
+
+  C(1) =  0.9     C_NAME(1) = 'Ash fraction amount'
+  C(2) =  1.0E2   C_NAME(2) = 'Pseudo reaction cst.'
+
+  PAFC =  0.6 ! Proximate analysis - Fixed Carbon
+  
+  # Radiation stuff
+  rad_on = .True.
+  rad_emis_w(1) = 1.0
+  rad_emis_w(2) = 1.0
+  rad_emis_w(3) = 1.0
+  rad_emis_w(4) = 1.0
+  rad_t_w(1) = 300
+  rad_t_w(2) = 300
+  rad_t_w(3) = 1000
+  rad_t_w(4) = 1000
+  rad_nquad = 1
+  rad_skip = 0
+  rad_nrr = 1
+  rad_rte = 'P1'
+  rad_spectral = 'GRAY'
+  const_sfp = 0.8588
+  const_emisp = 0.3131
+  const_absg  = 0.20 
+
+#_______________________________________________________________________
+# NUMERICAL SECTION
+
+! Normalize gas phase continuity residual
+  norm_g = 0.0
+
+! Normalize solids phase continuity residuals
+  norm_s = 0.0
+
+! Compute ep_star using Yu_Standish correlation
+!  YU_STANDISH = .T.
+
+#_______________________________________________________________________
+# GEOMETRY SECTION 
+  coordinates = 'Cartesian'
+
+  imax = 30
+  XLENGTH = 15.0
+
+  jmax = 90
+  YLENGTH = 90.0
+
+  no_k = .True.
+
+  nodesi = 1
+  nodesj = 1
+  nodesk = 1
+
+#_______________________________________________________________________
+# MATERIAL SECTION
+
+! Gas Section
+!---------------------------------------------------------------------//
+  NMAX_g = 5
+  RO_g0 =   0.0
+  MU_g0 = 1.8d-5
+  C_pg0 = 1020.0
+  K_g0  = 370.0 
+
+  SPECIES_g(1) = 'O2'             SPECIES_ALIAS_g(1) = 'O2'
+  SPECIES_g(2) = 'CO'             SPECIES_ALIAS_g(2) = 'CO'
+  SPECIES_g(3) = 'CO2'            SPECIES_ALIAS_g(3) = 'CO2'
+  SPECIES_g(4) = 'H2O'            SPECIES_ALIAS_g(4) = 'H2O'
+  SPECIES_g(5) = 'N2'             SPECIES_ALIAS_g(5) = 'N2'
+
+! Particle Section
+!---------------------------------------------------------------------//
+
+  ep_star = 0.5
+  e       = 0.8
+  c_f     = 0.1
+  phi     = 30.0
+
+  mmax = 1
+
+! Solids phase 1
+!---------------------------------------------------------------------//
+  solids_model(1) = 'TFM'
+  d_p0(1)  = 0.5
+  ro_s0(1) = 1.0
+  K_s0(1)  = 1.05 
+
+  NMAX_s(1)      = 2
+  SPECIES_s(1,1) = 'Fixed Carbon'   SPECIES_ALIAS_s(1,1) = 'FC1'
+  SPECIES_s(1,2) = 'Coal Ash'       SPECIES_ALIAS_s(1,2) = 'Ash1'
+
+! Solids phase 2
+!---------------------------------------------------------------------//
+#_______________________________________________________________________
+# INITIAL CONDITIONS SECTION
+
+! Bed
+!---------------------------------------------------------------------//
+
+  IC_X_w(1) = 0.0
+  IC_X_e(1) = 15.0
+  IC_Y_s(1) = 0.0
+  IC_Y_n(1) = 90.0
+
+  IC_EP_g(1)   = 0.86904762
+  ic_ep_s(1,1) = 0.13095238
+  ic_p_g(1) = 1013250 !!0.0
+
+  IC_T_g(1)   = 600.0 ! (K)
+  IC_T_s(1,1) = 600.0 ! (K)
+  IC_T_s(1,2) = 600.0 ! (K)
+
+  IC_U_g(1) = 0.0    ! (cm/sec)
+  IC_V_g(1) = 0.0   ! (cm/sec)
+
+  IC_X_g(1,1) = 0.00   ! O2
+  IC_X_g(1,2) = 0.00   ! CO
+  IC_X_g(1,3) = 0.50   ! CO2
+  IC_X_g(1,4) = 0.50   ! N2
+  IC_X_g(1,5) = 0.00   ! Soot
+
+  IC_U_s(1,1)  = 0.0
+  IC_V_s(1,1)  = 0.0
+
+  ic_x_s(1,1,1) = 0.50 ! Fixed Carbon
+  ic_x_s(1,1,2) = 0.50 ! Ash
+
+  ic_w_g(1) = 0.0
+  ic_gama_rg(1) = 0.0
+  ic_t_rg(1) = 600.00
+  ic_w_s(1,1) = 0.0
+  ic_u_s(1,2) = 0.0
+  ic_v_s(1,2) = 0.0
+  ic_w_s(1,2) = 0.0
+  ic_x_s(1,2,1) = 0.5
+  ic_x_s(1,2,2) = 0.5
+  ic_gama_rs(1,1) = 0.0
+  ic_gama_rs(1,2) = 0.0
+  ic_t_rs(1,1) = 600.00
+  ic_t_rs(1,2) = 600.00
+
+#_______________________________________________________________________
+# BOUNDARY CONDITIONS SECTION
+!---------------------------------------------------------------------//
+  BC_X_w(1)  =  0.0
+  BC_X_e(1)  =  0.0
+  BC_Y_s(1)  =  0.0
+  BC_Y_n(1)  =  90.0
+
+  BC_TYPE(1)   = 'NSW' ! no slip for velocity, othe variables see below
+
+  BC_Tw_g(1)     = 300.0
+  BC_Tw_s(1,1)   = 300.0
+  bc_c_t_s(1,1)  = 0.0
+
+  BC_X_w(2)  =  15.0
+  BC_X_e(2)  =  15.0
+  BC_Y_s(2)  =  0.0
+  BC_Y_n(2)  =  90.0
+
+  BC_TYPE(2)    = 'NSW' ! no slip for velocity, othe variables see below
+
+  BC_Tw_g(2)    = 1000.0
+  BC_Tw_s(2,1)  = 1000.0
+  bc_c_t_s(2,1) = 0.0
+
+#_______________________________________________________________________
+# CHEMICAL REACTION SECTION
+stiff_chemistry = .False.
+#_______________________________________________________________________
+# OUTPUT CONTROL SECTION
+
+  OUT_DT = 0.001
+  RES_DT = 0.001
+
+  SPX_DT(1)  = 0.001   ! EP_g 
+  SPX_DT(2)  = 0.001  ! P_g, P_star 
+  SPX_DT(3)  = 0.001   ! U_g, V_g, W_g
+  SPX_DT(4)  = 0.001   ! U_s, V_s, W_s
+  SPX_DT(5)  = 0.001  ! ROP_s
+  SPX_DT(6)  = 0.001  ! T_g, T_s
+  SPX_DT(7)  = 0.001  ! X_g, X_s
+  SPX_DT(8)  = 0.001   ! theta
+  SPX_DT(9)  = 0.001   ! Scalar
+  SPX_DT(10) = 0.001   ! Reaction Rates
+
+  RESID_STRING  = 'T0', 'T1'
+
+  nRR = 9 ! Number of reaction rates to write to .SPA
+
+  NLOG = 100
+  FULL_LOG = .T.
+  WRITE_DASHBOARD = .T.
+  energy_eq = .True.
+  energy_eq =  True
+  momentum_x_eq(0) = .False.
+  momentum_y_eq(0) = .False.
+  momentum_z_eq(0) = .False.
+  ro_g0 = 0
+  ic_p_g(1) = 1013215
+  ic_p_g(2) = 1013215
+  ic_p_g(3) = 1013215
+  ic_p_g(4) = 1013215
+
+
+  res_dt = 0.001
+  ENERGY_EQ  = .T.
+  ENERGY_EQ  = .True.
+  ro_g0 = 1.0
+  mw_avg = 28.97
+  momentum_x_eq(1) = False
+  momentum_y_eq(1) = False
+#_______________________________________________________________________
+THERMO DATA
+
+The following are coal pseudo species specifications.  Replace these
+with appropriate coal properties.  Also define the heat of formation (Hf298)
+values (the fifteenth coefficient).  The readme file describes the data format.
+Fixed Carbon               WARNING!       0.S   200.000  6000.000  B  12.01100 1
+-7.94079328E-01 8.09779756E-03-6.56398654E-06 1.84781958E-09 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00-7.94079328E-01 8.09779756E-03-6.56398654E-06    3
+ 1.84781958E-09 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+Coal Ash                   WARNING!       0.S   200.000  6000.000  B  56.00000 1
+ 8.70769880E+00 8.45407650E-03 0.00000000E+00 0.00000000E+00 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 8.70769880E+00 8.45407650E-03 0.00000000E+00    3
+ 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+CO                      User Defined      0.G   200.000  6000.000  B  28.01040 1
+ 3.04848590E+00 1.35172810E-03-4.85794050E-07 7.88536440E-11-4.69807460E-15    2
+-1.42661170E+04 6.01709770E+00 3.57953350E+00-6.10353690E-04 1.01681430E-06    3
+ 9.07005860E-10-9.04424490E-13-1.43440860E+04 3.50840930E+00-1.32936280E+04    4
+
+CO2                     User Defined      0.G   200.000  6000.000  B  44.00980 1
+ 4.63651110E+00 2.74145690E-03-9.95897590E-07 1.60386660E-10-9.16198570E-15    2
+-4.90249040E+04-1.93489550E+00 2.35681300E+00 8.98412990E-03-7.12206320E-06    3
+ 2.45730080E-09-1.42885480E-13-4.83719710E+04 9.90090350E+00-4.73281050E+04    4
+
+H2O                     User Defined      0.G   200.000  6000.000  B  18.01528 1
+ 2.67703890E+00 2.97318160E-03-7.73768890E-07 9.44335140E-11-4.26899910E-15    2
+-2.98858940E+04 6.88255000E+00 4.19863520E+00-2.03640170E-03 6.52034160E-06    3
+-5.48792690E-09 1.77196800E-12-3.02937260E+04-8.49009010E-01-2.90848170E+04    4
+
+N2                      User Defined      0.G   200.000  6000.000  B  28.01340 1
+ 2.95257637E+00 1.39690040E-03-4.92631603E-07 7.86010195E-11-4.60755204E-15    2
+-9.23948688E+02 5.87188762E+00 3.53100528E+00-1.23660988E-04-5.02999433E-07    3
+ 2.43530612E-09-1.40881235E-12-1.04697628E+03 2.96747038E+00 0.00000000E+00    4
+
+O2                      User Defined      0.G   200.000  6000.000  B  31.99880 1
+ 3.66096065E+00 6.56365811E-04-1.41149627E-07 2.05797935E-11-1.29913436E-15    2
+-1.21597718E+03 3.41536279E+00 3.78245636E+00-2.99673416E-03 9.84730201E-06    3
+-9.68129509E-09 3.24372837E-12-1.06394356E+03 3.65767573E+00 0.00000000E+00    4
