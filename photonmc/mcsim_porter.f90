@@ -31,10 +31,10 @@ double precision, dimension(nn,nn,nn):: abc, aem, aq
 double precision, dimension(nn,nn,nn):: tt, xco2, xh2o
 double precision:: sigma_a, sigma_s, sigma_t 
 integer, dimension (nn,nn,nn) :: bcid 
-
+double precision :: xe, ye, ze
 double precision:: xm, ym, zm, gsa, theta, phi,costheta, absijk,abstp,waven,eta,eta2
 double precision:: rho,pres
-double precision:: xi,yi,zi,xp, yp, zp 
+double precision:: xi,yi,zi,xmid, ymid, zmid 
 double precision:: xl, yl, zl, pl 
 double precision:: dcx, dcy, dcz,wt,dw
 double precision:: r1, r2, r3, r4  
@@ -110,27 +110,27 @@ end do
 ! left and right boundaries  (yz plane)
 do j=1,ny 
  do k=1,nz 
-  tt(1,j,k)  = 300.0d0 
-  tt(nx,j,k) = 300.0d0 
-  bcid(1,j,k)  = 3
-  bcid(nx,j,k) = 4
+    tt(1,j,k)  = 300.0d0 
+    tt(nx,j,k) = 300.0d0 
+    bcid(1,j,k)  = 3
+    bcid(nx,j,k) = 4
  end do 
 end do 
 
 ! top and bottom boundaries  (xz plane ) 
 do i=1,nx 
  do k=1,nz 
-  tt(i,1,k)   = 300.0d0 
-  tt(i,ny,k)  = 300.0d0 
-  bcid(1,j,k)  = 5 
-  bcid(i,ny,k) = 6
+    tt(i,1,k)   = 300.0d0 
+    tt(i,ny,k)  = 300.0d0 
+    bcid(1,j,k)  = 5 
+    bcid(i,ny,k) = 6
  end do 
 end do 
 
 Nrays_tot = 0
-do i=1,nx 
-  do j=1,ny 
-    do k=1,nz
+do i=1,nx   ! i   
+  do j=1,ny ! j 
+    do k=1,nz ! k 
      pres  = 1.0d0  !is this the correct value ?? 
      gasvolFrac = 1.0d0 
      npart = 10     !donot know the correct value. please chage this variable 
@@ -147,7 +147,7 @@ do i=1,nx
       cq        = 4.0*abstp*sigma*tt(i,j,k)**4.0
       dvol      = dx*dy*dz  
       nphotons  = nint(cq*dvol/ppr)
-      Nrays_tot = Nrays_tot + Nrays
+      Nrays_tot = Nrays_tot + nphotons
 
 !       xi  = xloc(i) + dx*rand() 
 !       yi  = yloc(j) + dy*rand()
@@ -157,7 +157,10 @@ do i=1,nx
 !       dcz = 1.0d0                  ! direction cosines
 !       icount = 0
 !       npht = 1 
-      do icount 1, nphotons           ! photons loop 
+      do icount= 1,nphotons           ! photons loop
+      write(*,*)icount, nx*ny*nz, icount, nphotons
+!      write(*,10)icount, nx*ny*nz, icount, nphotons
+!    10 format('Emitting Rays from Cell: ',I5,'/',I5, '     Tracing Ray: ',I5,"/",I5)
        r1 = rand()
        xi  = xloc(i) + dx*rand() 
        yi  = yloc(j) + dy*rand()
@@ -176,7 +179,7 @@ do i=1,nx
               cycle 
           end if 
           phi   =  2.0*pi*rand()
-          call edge_length(xi,yi,zi,dx,dy,dx,nx,ny,nz,theta,phi,pl)
+          call edge_length(xi,yi,zi,dx,dy,dz,nx,ny,nz,theta,phi,pl)
           dcx = cos(phi)*sin(theta)
           dcy = sin(phi)*sin(theta)
           dcz = cos(theta)
@@ -216,25 +219,27 @@ do i=1,nx
          !        reflected_direction = Reflect(faceID,rand,rand2)
          !        theta = reflected_direction(1)
          !        phi = reflected_direction(2)
-             end if
+          end if
 
              !Find New Distance to Next Cell Edge in Current Direction
 !             D_edge = Get_D_edge(x_ray,y_ray,z_ray,theta,phi)
              call edge_length(xe,ye,ze,dx,dy,dx,nx,ny,nz,theta,phi,pl) 
              !Find New Cell ID
-             x_mid = (x_ray + (x_ray + pl*sin(theta)*cos(phi)))/2d0
-             y_mid = (y_ray + (y_ray + pl*sin(theta)*sin(phi)))/2d0
-             z_mid = (z_ray + (z_ray + pl*cos(theta)))/2d0
-             ix = x_mid/dx
-             iy = y_mid/dy
-             iz = z_mid/dz
+             xmid = (x_ray + (x_ray + pl*sin(theta)*cos(phi)))/2d0
+             ymid = (y_ray + (y_ray + pl*sin(theta)*sin(phi)))/2d0
+             zmid = (z_ray + (z_ray + pl*cos(theta)))/2d0
+             ix = xmid/dx
+             iy = ymid/dy
+             iz = zmid/dz
 !             cellID = GetcellID(x_mid,y_mid,z_mid)
-         end do
+          end do ! energy check loop 
  !Absorb Final Small Fraction of Ray Energy if Below Threshold
             aem(ix,iy,iz) = aem(ix,iy,iz) + ray_energy
             ray_energy = 0d0
-        end do
-    end do
+        end do ! photon  loop 
+    end do !k   
+end do  ! j 
+end do  ! i 
 
 do i=1,nx,nx-1
   do j=1,ny,ny-1
@@ -242,34 +247,105 @@ do i=1,nx,nx-1
       abstp     = 0.1d0 
       ppr       = abstp * 2d0  
       cq        = 4.0*abstp*sigma*tt(i,j,k)**4.0
-      dvol      = dx*dy*dz  
+      if((i.eq.1).or.(i.eq.nx)) dvol = dy*dz 
+      if((j.eq.1).or.(j.eq.ny)) dvol = dx*dz 
+      if((k.eq.1).or.(k.eq.nz)) dvol = dx*dy 
       nphotons  = nint(cq*dvol/ppr)
-      Nrays_tot = Nrays_tot + Nrays
+      Nrays_tot = Nrays_tot + nphotons
+      aem(ix,iy,iz) = aem(ix,iy,iz) + abc(ix,iy,iz)*dvol-nphotons*PPR
+      do icount =1,nphotons           ! photons loop 
+       r1 = rand()
+       xi  = xloc(i) + dx*rand()
+       yi  = yloc(j) + dy*rand()
+       zi  = zloc(k) + dz*rand()
+       theta = acos(1d0-2d0*rand())              !2*pi*r1    
+!       if(cos(theta)>0.0d0) then 
+          waven =  400.0d0 + (1.0d0/(10000.0-400.0))*r1       ! calculate wave number for a given rand()
+          if (abs(xi) > xl)then
+              write(*,*)"Invalid x Coordinate:", xi
+              cycle
+          elseif (abs(yi) > yl)then
+              write(*,*) "Invalid y Coordinate:", yi
+              cycle
+          elseif (zi > zl .OR. zi < 0d0)then
+              write(*,*)"Invalid z Coordinate:", zi
+              cycle
+          end if
+          phi   =  2.0*pi*rand()
+          call edge_length(xi,yi,zi,dx,dy,dx,nx,ny,nz,theta,phi,pl)
+          dcx = cos(phi)*sin(theta)
+          dcy = sin(phi)*sin(theta)
+          dcz = cos(theta)
+          ray_energy = PPR          
+          do while(ray_energy > PPR*PPR_crit_perc/100d0) 
+          xe = xi + sl *  dcx
+          ye = yi + sl *  dcy
+          ze = zi + sl *  dcz
+          ix = floor(xe/dx) 
+          iy = floor(ye/dy) 
+          iz = floor(ze/dz) 
+          !Absorb Fraction of Ray Energy to Cell
+          abstp = 0.1d0 
+          E_abs = (1d0-exp(-abstp*sl))*ray_energy
+          ray_energy = ray_energy - E_abs
+          abc(ix,iy,iz) = abc(ix,iy,iz) + E_abs
 
+          !Check if Ray Hit a Surface
+          if (abs(abs(xe)-xl) <= eps .OR. & ! xe <=eps
+              abs(abs(ye)-yl) <= eps .OR. &
+              abs(ze-zl) <= eps .OR. &
+              abs(ze) <= eps)then
 
-               r2 = rand()
-               write(*,*) abstp, r2 
-                if(abstp>r2) then 
-                  npht= npht +1
-                  aa(ix,iy,iz) = npht
-                  write(*,*) 
-                end if 
-             end if
-          endif
-       end if  !cos theta loop  
-       call spin(dcx, dcy, dcz, gsa) ! compute new photon direction
-!      dcz =  sin(eta2)*cos(theta)
-! not sure about this loop. Please correct this 
-!************************************************************************
-      end do   !photon loop 
-10 continue
-    end do 
-  end do 
+              !Absorb Fraction of Ray Energy to Surf
+!              surfID = GetsurfID(x_ray,y_ray,z_ray)
+              E_abs = em_surf*ray_energy
+!              aem(ix,iy,iz) = aem(ix,iy,iz) + E_abs
+              ray_energy = ray_energy - E_abs
+                !Reflect Diffusely (if Wall Emissivity /= 1)
+                 if (em_surf == 1d0)then
+                     EXIT 
+                 end if
+          end if 
+          call edge_length(xe,ye,ze,dx,dy,dx,nx,ny,nz,theta,phi,pl) 
+          !Find New Cell ID
+             xmid = (x_ray + (x_ray + pl*sin(theta)*cos(phi)))/2d0
+             ymid = (y_ray + (y_ray + pl*sin(theta)*sin(phi)))/2d0
+             zmid = (z_ray + (z_ray + pl*cos(theta)))/2d0
+             ix = xmid/dx
+             iy = ymid/dy
+             iz = zmid/dz
+!             cellID = GetcellID(x_mid,y_mid,z_mid)
+         end do
+ !Absorb Final Small Fraction of Ray Energy if Below Threshold
+            aem(ix,iy,iz) = aem(ix,iy,iz) + ray_energy
+            ray_energy = 0d0
+        end do
+    end do
+end do 
 end do 
 
-deallocate(xloc)
-deallocate(yloc) 
-deallocate(zloc) 
+    !Calculate Source Terms in Cells--------------------------------------------
+    do i = 1,nx 
+      do j=1,ny 
+        do k=1,nz 
+          aq(ix,iy,iz) =  aem(ix,iy,iz)/dv - abc(ix,iy,iz)
+        end do
+      end do 
+    end do 
+
+    !Calculate Flux Terms in Surfs----------------------------------------------
+!    do i = 1,N_surfs
+!       faceID = surf_data%face(i,1)
+!       surf_data%energy(i,3) = surf_data%energy(i,2)/da(faceID) - &
+!                               surf_data%energy(i,1)
+!    end do
+
+
+!deallocate(xloc)
+!deallocate(yloc) 
+!deallocate(zloc) 
+
+
 return
 end
 
@@ -492,8 +568,8 @@ dx=xx(2)-xx(1)
     end if
 end function
 
-subroutine edge_length(xc,yc,zc,dx,dy,dx,nx,ny,nz,thet,phia,sl)
-double precision, parameter ::  eps=1.0e-12
+subroutine edge_length(xc,yc,zc,dx,dy,dz,nx,ny,nz,thet,phia,sl)
+double precision, parameter :: eps=1.0d-12
 double precision :: xc, yc, zc, dx, dy, dz, sl 
 double precision :: xl, yl, zl,xd,yd,zd
 integer :: nx, ny, nz  
@@ -575,6 +651,8 @@ do i = 1,6
         sl = t(i)
     end if
 end do
+
+return
 end 
 
 !    function Reflect(faceID,rand,rand2,dr1,dr2) result(reflected_direction)
