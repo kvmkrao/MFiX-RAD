@@ -83,8 +83,8 @@ subroutine getGasInfo (cell, gasinfo)
     do i=1, NMAX(0) ! mass to mole fraction
         if (isRadSpecies(i)) then
 	    ! for gas species, gas mole fraction is used
-            xg= X_g(cell,i)*MW_MIX_g(cell)/MW_AVG !MW_g(i)
-            gasinfo%C(radSpeciesId(i)) = X_g(cell,i) !xg
+            xg= X_g(cell,i)*MW_MIX_g(cell)/MW_g(i)  ! MW_AVG !MW_g(i)
+            gasinfo%C(radSpeciesId(i)) = xg !X_g(cell,i) !xg
         endif
     end do
 end subroutine
