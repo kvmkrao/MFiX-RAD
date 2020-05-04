@@ -61,13 +61,13 @@ end subroutine rad_final
 
 subroutine rad_calc()
     use rad_fields, only: radiationOn
-    use pmc_mod
+    use rad_pmc_mod
     implicit none
     include 'usrnlst.inc'
     if (.not.radiationOn) return
     ! spectral calculation
     if(RAD_RTE.eq.'PMC') then 
-    call mcfurnace
+    call rad_pmc_calc
     else 
       call rad_spectral_calc()
        ! rte calculation
