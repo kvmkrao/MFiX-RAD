@@ -55,7 +55,6 @@ subroutine rad_pmc_calc
     double precision :: pres, xH2O, xCO2, volfrac,d_part, rho,eta,tmp
     integer :: npart_cell
     character(len=1) :: c, bsp = char(8)
-!    character(len=50) :: filename, grid_t, abs_coef_t, PPR_t
     integer :: IER 
     integer :: I1, I2, J1, J2, K1, K2
     integer :: indx(4) 
