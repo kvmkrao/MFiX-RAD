@@ -83,37 +83,37 @@ subroutine rad_pmc_calc
     close(21)
 
    !Location of cell centers 	
-   do k=1,kmax 
-     do j=1,jmax 
-      do i=1,imax 
+    do k=1,kmax 
+      do j=1,jmax 
+       do i=1,imax 
         XEF(i) = x_min + (i-1)*dx(i)  + dx(i)/2.0
         YNF(j) = y_min + (j-1)*dy(j)  + dy(j)/2.0
         ZTF(k) = z_min + (k-1)*dz(k)  + dz(k)/2.0
+       end do 
       end do 
-     end do 
     end do 
 
     !Calculate Temperatures via cell centers 
     do k=1, kmax
-     do i=1, imax
-       do j=1, jmax
+      do i=1, imax
+        do j=1, jmax
          ijk = funijk(i,j,k) 
          x_c = XEF(i)
          y_c = YNF(j) 
          z_c = ZTF(k)  
          rad = sqrt((x_c-1.0)**2.0 + (y_c-1.0d0)**2.0)
-        if (rad < 1d0)then
+         if (rad < 1d0)then
             if (z_c <= 0.375d0)then
                 Tc = 400d0+1400d0*(z_c/0.375d0)
             else
                 Tc = 1800d0-1000d0*(z_c-0.375d0)/3.625d0
             end if
             T_g(ijk) = (Tc-800d0)*(1d0-3d0*rad**2+2d0*rad**3)+800d0
-        else
+         else
             T_g(ijk) = 800d0
-        end if
-       end do
-     end do
+         end if
+        end do
+      end do
     end do 
 
     E_out_sum = 0.0d0
@@ -121,62 +121,62 @@ subroutine rad_pmc_calc
     !Calculate total Emissive Power
     do k = 1, kmax
       do i = 1, imax 
-          do j=1, jmax 
+         do j=1, jmax 
           ijk =funijk(i,j,k) 
           emise(ijk)  = 4.0d0*abs_coef*stef_boltz*(T_g(ijk))**4.0
           abse(ijk)   = 0.0d0 
           absebc(ijk) = 0.0d0 
           E_out_sum = E_out_sum + emise(ijk)*dx(i)*dy(j)*dz(k)
-          end do
+         end do
       end do 
     end do 
 
 !     boundary at z= z_min  and z=z_max 
-      do k=1, 2  
-        do i=1, imax  
-          do j=1,jmax   
-           E_out_sum = E_out_sum + em_surf*stef_boltz*300.0d0**4*dx(i)*dy(j)
-          end do 
+    do k=1, 2  
+      do i=1, imax  
+        do j=1,jmax   
+            E_out_sum = E_out_sum + em_surf*stef_boltz*300.0d0**4*dx(i)*dy(j)
         end do 
-     end do 
+      end do 
+    end do 
 
 !     boundary at y= y_min  and y=y_max
-      do k=1, kmax 
-        do i=1, imax  
-          do j=1,2 
+    do k=1, kmax 
+      do i=1, imax  
+        do j=1,2 
            E_out_sum = E_out_sum + em_surf*stef_boltz*300.0d0**4*dx(i)*dz(k)
-          end do 
         end do 
-     end do 
+      end do 
+    end do 
 
 !     boundary at y= y_min  and y=y_max
-      do k=kmin2, kmax 
-        do i=1,2   
-          do j=jmin2,jmax   
+    do k=kmin2, kmax 
+      do i=1,2   
+        do j=jmin2,jmax   
            E_out_sum = E_out_sum + em_surf*stef_boltz*300.0d0**4*dy(j)*dz(k) 
-          end do 
         end do 
-     end do 
+      end do 
+    end do 
 
-     PPR = E_out_sum/float(nrays_tot)
-     write(*,*) "energy", E_out_sum,PPR 
-!    !MONTE CARLO SIMULATION-----------------------------------------------------
-!    !Loop Over All Cells
-     ncountr = 0 
-     do k =1, kmax
-       do i=1, imax 
-          do j=1, jmax
+    PPR = E_out_sum/float(nrays_tot)
+    write(*,*) "energy", E_out_sum,PPR 
+!   !MONTE CARLO SIMULATION-----------------------------------------------------
+!   !Loop Over All Cells
+    ncountr = 0 
+    do k =1, kmax
+      do i=1, imax 
+        do j=1, jmax
           ijk = funijk(i,j,k) 
 !!        !Determine Number of Rays to emit in the current cell 
           dv = dx(i)*dy(j)*dz(k) 
           nrays = nint(emise(ijk)*dv/PPR) 
           ncountr = ncountr + nrays
 
-!        Absorb Energy due to rounding off the number of rays  at current cell
-         abse(ijk) = abse(ijk) + emise(ijk)*dv-nrays*PPR  
-        !loop over all Rays emit from current cell
-         if(nrays.lt.1) cycle 
-         do l = 1, nrays
+!         Absorb Energy due to rounding off the number of rays  at current cell
+          abse(ijk) = abse(ijk) + emise(ijk)*dv-nrays*PPR  
+         !loop over all Rays emit from current cell
+          if(nrays.lt.1) cycle 
+          do l = 1, nrays
 !            !Display Current Progress
             write(*,10,advance='no')(bsp,n=1,70),ijk,imax*jmax*kmax, l, nrays
             10 format(70A1,'Emitting Rays from Cell: ',I5,'/',I5, &
@@ -202,10 +202,10 @@ subroutine rad_pmc_calc
 !!	    find new cell 
             call find_length(x_ray,y_ray,z_ray, theta, phi,pl) 
 !            !Ray Tracing Until Ray Energy is Below Threshold Energy
-             ray_energy  = PPR
-             indx(1) = i 
-             indx(2) = j 
-             indx(3) = k
+            ray_energy  = PPR
+            indx(1) = i 
+            indx(2) = j 
+            indx(3) = k
             do while(ray_energy > PPR*PPR_crit_perc/100d0)
                 x_ray = x_ray + pl*sin(theta)*cos(phi)
                 y_ray = y_ray + pl*sin(theta)*sin(phi)
@@ -244,151 +244,147 @@ subroutine rad_pmc_calc
             end do
          end do
         end do
-    end do
-  end do 
+      end do
+    end do 
 
-     do k =1, kmax
-       do i=1, imax 
-          do j=1, jmax
-          ijk = funijk(i,j,k) 
-          if(i.eq.10.and.j.eq.10) write(12,*) i,j,k,abse(ijk),absebc(ijk)
-          end do 
+    do k =1, kmax
+      do i=1, imax 
+        do j=1, jmax
+           ijk = funijk(i,j,k) 
+           if(i.eq.10.and.j.eq.10) write(12,*) i,j,k,abse(ijk),absebc(ijk)
         end do 
       end do 
+    end do 
 
 ! loop over the boundaries 
-  do m = 1, DIMENSION_BC
-    if (BC_DEFINED(m)) then
-       ! The range of boundary cells
-      I1 = BC_I_W(m)
-      I2 = BC_I_E(m)
-      J1 = BC_J_S(m)
-      J2 = BC_J_N(m)
-      K1 = BC_K_B(m)
-      K2 = BC_K_T(m)
-      if(i1.le.2)    i1 = 1 
-      if(i2.ge.imax) i2 = imax 
-      if(j1.le.2)    j1 = 1 
-      if(j2.ge.jmax) j2 = jmax 
-      if(k1.le.2)    k1 = 1 
-      if(k2.ge.kmax) k2 = kmax 
-      if(m.le.2) then 
-         dv    = dx1*dy1
-       else if(m.eq.3.or.m.eq.4) then 
-         dv    = dx1*dz1
-       else 
-         dv = dy1*dz1
-       end if 
+     do m = 1, DIMENSION_BC
+       if (BC_DEFINED(m)) then
+         ! The range of boundary cells
+         I1 = BC_I_W(m)
+         I2 = BC_I_E(m)
+         J1 = BC_J_S(m)
+         J2 = BC_J_N(m)
+         K1 = BC_K_B(m)
+         K2 = BC_K_T(m)
+         if(i1.le.2)    i1 = 1 
+         if(i2.ge.imax) i2 = imax 
+         if(j1.le.2)    j1 = 1 
+         if(j2.ge.jmax) j2 = jmax 
+         if(k1.le.2)    k1 = 1 
+         if(k2.ge.kmax) k2 = kmax 
+         if(m.le.2) then 
+            dv    = dx1*dy1
+         else if(m.eq.3.or.m.eq.4) then 
+            dv    = dx1*dz1
+         else 
+            dv = dy1*dz1
+         end if 
 
-       do k=k1,k2
-         do i=i1,i2
-           do j=j1,j2
-            ijk = funijk(i,j,k) 
-
-!!          !Determine Number of Rays to emit in the current cell 
-            nrays = nint(em_surf*stef_boltz*(300.0d0**4)*dv/PPR)
-            ncountr = ncountr + nrays
-
+         do k=k1,k2
+           do i=i1,i2
+             do j=j1,j2
+               ijk = funijk(i,j,k) 
+!!             !Determine Number of Rays to emit in the current cell 
+               nrays = nint(em_surf*stef_boltz*(300.0d0**4)*dv/PPR)
+               ncountr = ncountr + nrays
 !           Absorb Energy left due to round off at current cell
-            indx(1) = i
-            indx(2) = j
-            indx(3) = k
-            if(nrays.lt.1) cycle
-           !loop over all Rays emit from current cell
-            do l = 1, nrays
-!            !Display Current Progress
-              write(*,10,advance='no')(bsp,n=1,70),ijk, imax*jmax, l, nrays
-!
-!             !Pick Uniform Point of Emission
-              call random_number(rand)
-              !rand = 0.5 
-              if(m.eq.5) then 
-              x_ray = 0.0+rand*dx(indx(1)) - dx(indx(1))/2.0 
-              else if (m.eq.6) then 
-              x_ray = x_max+rand*dx(indx(1)) - dx(indx(1))/2.0
-              else 
-              x_ray = XEF(i)+rand*dx(indx(1)) - dx(indx(1))/2.0
-              end if 
+               indx(1) = i
+               indx(2) = j
+               indx(3) = k
+               if(nrays.lt.1) cycle
+              !loop over all Rays emit from current cell
+               do l = 1, nrays
+!                !Display Current Progress
+                 write(*,10,advance='no')(bsp,n=1,70),ijk, imax*jmax, l, nrays
+!                !Pick Uniform Point of Emission
+                 call random_number(rand)
+                 !rand = 0.5 
+                 if(m.eq.5) then 
+                    x_ray = 0.0+rand*dx(indx(1)) - dx(indx(1))/2.0 
+                 else if (m.eq.6) then 
+                    x_ray = x_max+rand*dx(indx(1)) - dx(indx(1))/2.0
+                 else 
+                    x_ray = XEF(i)+rand*dx(indx(1)) - dx(indx(1))/2.0
+                 end if 
 
-              call random_number(rand)
-              !rand = 0.6 
-              if(m.eq.3) then
-              y_ray = 0.0+rand*dy(indx(2)) - dy(indx(2))/2.0 
-              else if (m.eq.4) then
-              y_ray = y_max+rand*dy(indx(2)) - dy(indx(2))/2.0
-              else
-              y_ray = YNF(j)+rand*dy(indx(2)) - dy(indx(2))/2.0
-              end if
+                 call random_number(rand)
+                 !rand = 0.6 
+                 if(m.eq.3) then
+                    y_ray = 0.0+rand*dy(indx(2)) - dy(indx(2))/2.0 
+                 else if (m.eq.4) then
+                    y_ray = y_max+rand*dy(indx(2)) - dy(indx(2))/2.0
+                 else
+                    y_ray = YNF(j)+rand*dy(indx(2)) - dy(indx(2))/2.0
+                 end if
 
-              call random_number(rand)
-              !rand = 0.7 
-              if(m.eq.1) then
-              z_ray = 0.0+rand*dz(indx(3)) - dz(indx(3))/2.0  
-              else if (m.eq.2) then
-              z_ray = z_max+rand*dz(indx(3)) - dz(indx(3))/2.0
-              else
-              z_ray = ZTF(k)+rand*dz(indx(3)) - dz(indx(3))/2.0
-              end if
+                 call random_number(rand)
+                 !rand = 0.7 
+                 if(m.eq.1) then
+                    z_ray = 0.0+rand*dz(indx(3)) - dz(indx(3))/2.0  
+                 else if (m.eq.2) then
+                    z_ray = z_max+rand*dz(indx(3)) - dz(indx(3))/2.0
+                 else
+                    z_ray = ZTF(k)+rand*dz(indx(3)) - dz(indx(3))/2.0
+                 end if
 
-!             !Pick Diffuse Direction of Emission
-              call random_number(rand)
-              !rand = 0.5 
-              theta = ACOS(1d0-2d0*rand)
-              call random_number(rand)
-              !rand = 0.6 
-              phi = 2d0*PI*rand
-!!            find new cell 
-              call find_length(x_ray,y_ray,z_ray, theta, phi,pl)
-!             !Ray Tracing Until Ray Energy is Below Threshold Energy
-              ray_energy  = PPR
+!                !Pick Diffuse Direction of Emission
+                 call random_number(rand)
+                 !rand = 0.5 
+                 theta = ACOS(1d0-2d0*rand)
+                 call random_number(rand)
+                 !rand = 0.6 
+                 phi = 2d0*PI*rand
+!!               find new cell 
+                 call find_length(x_ray,y_ray,z_ray, theta, phi,pl)
+!                !Ray Tracing Until Ray Energy is Below Threshold Energy
+                 ray_energy  = PPR
 
-             do while(ray_energy > PPR*PPR_crit_perc/100d0)
-!!              !Move to Cell Edge
+                 do while(ray_energy > PPR*PPR_crit_perc/100d0)
+!!                 !Move to Cell Edge
 
-                x_ray = x_ray + pl*sin(theta)*cos(phi)
-                y_ray = y_ray + pl*sin(theta)*sin(phi)
-                z_ray = z_ray + pl*cos(theta)
+                   x_ray = x_ray + pl*sin(theta)*cos(phi)
+                   y_ray = y_ray + pl*sin(theta)*sin(phi)
+                   z_ray = z_ray + pl*cos(theta)
 
-                E_abs = (1d0-exp(-abs_coef*pl))*ray_energy
-                ray_energy = ray_energy - E_abs
-                ijk = funijk(indx(1),indx(2),indx(3))
-                abse(ijk) =abse(ijk) + E_abs
-!!              !Check if Ray Hit a Surface
-                if (x_ray.le.x_min+eps .OR. x_ray.ge.x_max-eps  .OR. &
-                    y_ray.le.y_min+eps .OR. y_ray.ge.y_max-eps  .OR. &
-                    z_ray.le.z_min+eps .OR. z_ray.ge.z_max-eps) then
-!!                   
-!!                  !Absorb Fraction of Ray Energy to Surf
-                    call getwallbcnode(x_ray,y_ray,z_ray,indx(1),indx(2),indx(3))
-                    E_abs      = em_surf*ray_energy
-                    wlbcid     = funijk(indx(1),indx(2),indx(3))
-                    absebc(wlbcid)  = absebc(wlbcid) +  E_abs
-                    ray_energy = ray_energy - E_abs
+                   E_abs = (1d0-exp(-abs_coef*pl))*ray_energy
+                   ray_energy = ray_energy - E_abs
+                   ijk = funijk(indx(1),indx(2),indx(3))
+                   abse(ijk) =abse(ijk) + E_abs
+!!                 !Check if Ray Hit a Surface
+                   if (x_ray.le.x_min+eps .OR. x_ray.ge.x_max-eps  .OR. &
+                       y_ray.le.y_min+eps .OR. y_ray.ge.y_max-eps  .OR. &
+                       z_ray.le.z_min+eps .OR. z_ray.ge.z_max-eps) then
+!!                      
+!!                     !Absorb Fraction of Ray Energy to Surf
+                       call getwallbcnode(x_ray,y_ray,z_ray,indx(1),indx(2),indx(3))
+                       E_abs      = em_surf*ray_energy
+                       wlbcid     = funijk(indx(1),indx(2),indx(3))
+                       absebc(wlbcid)  = absebc(wlbcid) +  E_abs
+                       ray_energy = ray_energy - E_abs
 !!
-!!                  !Reflect Diffusely (if Wall Emissivity /= 1)
-                    if (em_surf .eq. 1.0d0) exit 
-                    call random_number(rand)
-               !     rand = 0.5 
-                    call random_number(rand2)
-               !     rand2 = 0.6 
-                    call reflect(x_ray,y_ray,z_ray,rand,rand2,theta,phi)
-                end if
+!!                     !Reflect Diffusely (if Wall Emissivity /= 1)
+                       if (em_surf .eq. 1.0d0) exit 
+                       call random_number(rand)
+                  !     rand = 0.5 
+                       call random_number(rand2)
+                  !     rand2 = 0.6 
+                       call reflect(x_ray,y_ray,z_ray,rand,rand2,theta,phi)
+                   end if
 
-!!              !Find New Distance to Next Cell Edge in Current Direction
-                call find_length(x_ray,y_ray,z_ray, theta, phi,pl)
-!!              !Find New Cell ID
-                x_mid = (x_ray + (x_ray + pl*sin(theta)*cos(phi)))/2d0
-                y_mid = (y_ray + (y_ray + pl*sin(theta)*sin(phi)))/2d0
-                z_mid = (z_ray + (z_ray + pl*cos(theta)))/2d0
-                call find_celln(x_mid, y_mid, z_mid, indx(1), indx(2),indx(3))
-            end do
-
-            end do
-          end do
-        end do
-      end do
-    end if
-  end do
+!!                 !Find New Distance to Next Cell Edge in Current Direction
+                   call find_length(x_ray,y_ray,z_ray, theta, phi,pl)
+!!                 !Find New Cell ID
+                   x_mid = (x_ray + (x_ray + pl*sin(theta)*cos(phi)))/2d0
+                   y_mid = (y_ray + (y_ray + pl*sin(theta)*sin(phi)))/2d0
+                   z_mid = (z_ray + (z_ray + pl*cos(theta)))/2d0
+                   call find_celln(x_mid, y_mid, z_mid, indx(1), indx(2),indx(3))
+                 end do !check energy 
+               end do !no of rays 
+             end do !j 
+           end do ! i 
+         end do !k 
+       end if !bc_defined 
+     end do !no of boundaries 
 
 
     srad = 0.0d0
@@ -443,7 +439,7 @@ subroutine find_celln(ray_x,ray_y,ray_z, ix, jy, kz)
 end subroutine find_celln 
 
     !This subroutine returns the id the cell on a wall boundary for the given the x,y, and z coordinates of the point.
-     subroutine getwallbcnode(x,y,z,inew,jnew,knew)
+subroutine getwallbcnode(x,y,z,inew,jnew,knew)
         implicit none
 !       !Initialize Variables
         double precision :: x, y, z
@@ -461,11 +457,11 @@ end subroutine find_celln
         if(y .le. y_min+eps) jnew = 1
         if(z-eps .ge. z_max) knew = kmax
         if(z .le. z_min+eps) knew = 1
-    end subroutine getwallbcnode 
+end subroutine getwallbcnode 
 
-    !Subroutine to find distance to Cell Edge in Current Direction------------------------
-     subroutine find_length(x,y,z,theta, phi, pl) 
-     !This subroutine computes the distance from the current point (defined by x,y,z) to the bounding cell surface in the current direction of emission (defined by input cone angle theta [0,PI] and azimuthal angle phi [0,2*PI]). Point may be on a cell face/edge/corner. More information on page 158 of Mahan's book.
+!Subroutine to find distance to Cell Edge in Current Direction------------------------
+subroutine find_length(x,y,z,theta, phi, pl) 
+!This subroutine computes the distance from the current point (defined by x,y,z) to the bounding cell surface in the current direction of emission (defined by input cone angle theta [0,PI] and azimuthal angle phi [0,2*PI]). Point may be on a cell face/edge/corner. More information on page 158 of Mahan's book.
         implicit none
         !Initialize Variables
         double precision, intent(in)  :: x,y,z,theta,phi
@@ -534,11 +530,11 @@ end subroutine find_celln
                 pl = t(l)
             end if
         end do
-     return 
-     end subroutine find_length 
+        return 
+end subroutine find_length 
 !
 !    !Subroutine to find Reflecting Direction----------------------------------------------
-     subroutine  reflect(x_r,y_r,z_r,rand,rand2, theta, phi)
+subroutine  reflect(x_r,y_r,z_r,rand,rand2, theta, phi)
 !    !This subroutine provides the new ray direction after a reflecting event occurs, relative to the global cartesian coordinates given the faceID at which the reflection occurs(-x=1, +x=2, -y=3, +y=4, -z=5, +z=6) and two random numbers seeded between 0 and 1 (rand and rand2). The reflecting surface is assumed to be diffuse. (This function can also be utilized when emmitting rays from surfaces not normal to the global coordinate system.)
         implicit none
 !        !Initialize Variables
@@ -606,9 +602,9 @@ end subroutine find_celln
 !        !Back Calculate Reflected Direction (Angles) Relative to GCS
         theta  = atan2(sqrt(x_p_t**2+y_p_t**2),z_p_t) 
         phi    = atan2(y_p_t,x_p_t)
-    end subroutine reflect
+end subroutine reflect
 
-      SUBROUTINE init_random_seed
+SUBROUTINE init_random_seed
 !^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
       IMPLICIT NONE
 !-----------------------------------------------
@@ -617,7 +613,6 @@ end subroutine find_celln
       INTEGER              :: isize,idate(8)
       INTEGER,ALLOCATABLE  :: iseed(:)
 !-----------------------------------------------
-
       CALL DATE_AND_TIME(VALUES=idate)
       CALL RANDOM_SEED(SIZE=isize)
       ALLOCATE( iseed(isize) )
@@ -627,6 +622,6 @@ end subroutine find_celln
 
       DEALLOCATE( iseed )
 
-      END SUBROUTINE init_random_seed
+END SUBROUTINE init_random_seed
 
 end module rad_pmc_mod
