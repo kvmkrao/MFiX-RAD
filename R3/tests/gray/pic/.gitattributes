@@ -1,0 +1,2 @@
+*.f gitlab-language=fortran
+*.inc gitlab-language=fortran

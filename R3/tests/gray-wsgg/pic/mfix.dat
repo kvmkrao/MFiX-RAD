@@ -1,0 +1,350 @@
+########################################################################
+#  Simple 2D Bed Gasification problem                                  #
+#                                                                      #
+# Author:  V. Kotteda                                  Date:  1-07-19  #
+#                                                                      #
+########################################################################
+#_______________________________________________________________________
+# RUN CONTROL SECTION
+
+### Run Controls
+  description     = 'Simple 2D Bed'
+  run_name        = '2D-Rad'
+  units           = 'cgs'
+  run_type        = 'new'
+  time            = 0.0
+  res_dt          = 0.001
+  batch_wallclock = 9000.0
+  chk_batchq_end  = .True.
+  drag_c1         = 0.8
+  drag_d1         = 2.65
+  energy_eq       = .False.
+  nodesi          = 1
+  nodesj          = 1
+  nodesk          = 1
+  term_buffer     = 180.0
+  write_dashboard = .True.
+  full_log        = .True.
+
+  call_usr = .True.
+  PAFC =  0.6 ! Proximate analysis - Fixed Carbon
+### Radiation stuff
+  rad_on = .True.
+  rad_emis_w(1) = 1.0
+  rad_emis_w(2) = 1.0
+  rad_emis_w(3) = 1.0
+  rad_emis_w(4) = 1.0
+  rad_t_w(1) = 300
+  rad_t_w(2) = 300
+  rad_t_w(3) = 1000
+  rad_t_w(4) = 1000
+  rad_nquad = 1
+  rad_skip = 0
+  rad_nrr = 1
+  rad_rte = 'P1'
+  rad_spectral = 'GRAY-WSGG'
+  RAD_WSGG = 'SMITH82'
+  RAD_SPL  = 23.14
+  rad_nquad     = 1   #!!!!
+  const_sfp = 0.4
+  const_emisp = 0.6
+  const_absg  = 0.20
+
+
+### Cartesian grid
+  cartesian_grid = .False.
+  use_stl        = .False.
+
+### Numeric
+  max_nit = 200
+
+### Geometry
+  coordinates = 'Cartesian'
+  imax        = 30
+  jmax        = 90
+  kmax        = 2
+  x_max       = 15.0
+  x_min       = 0
+  y_max       = 90.0
+  y_min       = 0
+  z_max       = 2.0
+  z_min       = 0.0
+
+#### Fluid
+  mu_g0            = 1.8000e-05
+  RO_g0 =   1.0   ! Density set to 0 to turn off interphase momentum
+  MU_g0 =   1.8d-5  ! Viscosity [Pa-s]
+  C_pg0 =   1020.0  ! Gas specific heat [J/kg-K](air @ ~450K)
+  K_g0  =   370.0  ! Gas thermal cond [W/m-K]  air @ ~450K)
+
+  momentum_x_eq(0) = .False.
+  momentum_y_eq(0) = .False.
+  momentum_z_eq(0) = .False.
+  species_eq(0)    = .False.
+  nmax_g           = 5
+  # Fluid species 1: O2
+    species_g(1)       = 'O2'
+    species_alias_g(1) = 'O2'
+  # Fluid species 2: CO
+    species_g(2)       = 'CO'
+    species_alias_g(2) = 'CO'
+  # Fluid species 3: CO2
+    species_g(3)       = 'CO2'
+    species_alias_g(3) = 'CO2'
+  # Fluid species 4: H2O
+    species_g(4)       = 'H2O'
+    species_alias_g(4) = 'H2O'
+  # Fluid species 5: N2
+    species_g(5)       = 'N2'
+    species_alias_g(5) = 'N2'
+
+#### Solids
+  mmax = 1
+  # Solid 1
+    solids_model(1)  = 'PIC'
+    d_p0(1)          = 0.5
+    ro_s0(1)         = 1.0
+    momentum_z_eq(1) = .False.
+    species_eq(1)    = .False.
+    nmax_s(1)        = 2
+    des_em(1)        = 0.6 
+    k_s0(1)          = 1.05 
+    # Solid 1 species 1: FC1
+      species_s(1,1)       = 'Fixed Carbon'
+      species_alias_s(1,1) = 'FC1'
+    # Solid 1 species 2: Ash1
+      species_s(1,2)       = 'Coal Ash'
+      species_alias_s(1,2) = 'Ash1'
+
+  # Solid 2
+    momentum_z_eq(2) = .False.
+    species_eq(2)    = .False.
+
+
+### Initial conditions
+  # Initial condition 1: IC_1
+    ic_x_e(1)                = 15.0
+    ic_x_w(1)                = 0.0
+    ic_y_s(1)                = 0.0
+    ic_y_n(1)                = 45.0
+    ic_z_b(1)                = 0.0
+    ic_z_t(1)                = 2.0
+    ic_des_fit_to_region(1)  = .False.
+    ic_ep_g(1)               = 0.86904762
+    ic_t_g(1)                = 600.0
+    ic_u_g(1)                = 0.0
+    ic_v_g(1)                = 0.0
+    ic_w_g(1)                = 0.0
+    ic_gama_rg(1)            = 0.0
+    ic_p_g(1)                = 1013215
+    ic_t_rg(1)               = 600.15
+    ic_x_g(1,1)              = 0.0 !O2
+    ic_x_g(1,2)              = 0.0 !CO
+    ic_x_g(1,3)              = 0.5 !CO2
+    ic_x_g(1,4)              = 0.5 !H2O
+    ic_x_g(1,5)              = 0.0 !N2
+    ic_ep_s(1,1)             = 0.13095238 
+    ic_pic_const_statwt(1,1) = 1.0
+    ic_t_s(1,1)              = 600.0
+    ic_theta_m(1,1)          = 600 #0.06
+    ic_u_s(1,1)              = 0.0
+    ic_v_s(1,1)              = 0.0
+    ic_w_s(1,1)              = 0.0
+    ic_gama_rs(1,1)          = 0.0
+    ic_t_rs(1,1)             = 600.0
+    ic_x_s(1,1,1)            = 0.5 !FC1
+    ic_x_s(1,1,2)            = 0.5 !Ash1
+    ic_t_s(1,2)              = 600.0
+    ic_u_s(1,2)              = 0.0
+    ic_v_s(1,2)              = 0.0
+    ic_w_s(1,2)              = 0.0
+    ic_gama_rs(1,2)          = 0.0
+    ic_t_rs(1,2)             = 600.0
+
+    ic_x_e(2)                = 15.0
+    ic_x_w(2)                = 0.0
+    ic_y_s(2)                = 45.0
+    ic_y_n(2)                = 90.0
+    ic_z_b(2)                = 0.0
+    ic_z_t(2)                = 2.0
+    ic_des_fit_to_region(2)  = .False.
+    ic_ep_g(2)               = 0.86904762
+    ic_t_g(2)                = 800.0
+    ic_u_g(2)                = 0.0
+    ic_v_g(2)                = 0.0
+    ic_w_g(2)                = 0.0
+    ic_gama_rg(2)            = 0.0
+    ic_p_g(2)                = 1013215
+    ic_t_rg(2)               = 800.0
+    ic_x_g(2,1)              = 0.0 !O2
+    ic_x_g(2,2)              = 0.0 !CO
+    ic_x_g(2,3)              = 0.5 !CO2
+    ic_x_g(2,4)              = 0.5 !H2O
+    ic_x_g(2,5)              = 0.0 !N2
+    ic_ep_s(2,1)             = 0.13095238 #0.214
+    ic_pic_const_statwt(2,1) = 1.0
+    ic_t_s(2,1)              = 600.0
+    ic_theta_m(2,1)          = 0.06
+    ic_u_s(2,1)              = 0.0
+    ic_v_s(2,1)              = 0.0
+    ic_w_s(2,1)              = 0.0
+    ic_gama_rs(2,1)          = 0.0
+    ic_t_rs(2,1)             = 600.15
+    ic_x_s(2,1,1)            = 0.5 !FC1
+    ic_x_s(2,1,2)            = 0.5 !Ash1
+    ic_t_s(2,2)              = 600.0
+    ic_u_s(2,2)              = 0.0
+    ic_v_s(2,2)              = 0.0
+    ic_w_s(2,2)              = 0.0
+    ic_gama_rs(2,2)          = 0.0
+    ic_t_rs(2,2)             = 600.15
+
+# Boundary conditions
+  # Boundary condition 1: BC_1
+    bc_type(1)   = 'NSW'
+    bc_x_e(1)    = 0.0
+    bc_x_w(1)    = 0.0
+    bc_y_s(1)    = 0.0
+    bc_y_n(1)    = 90.0
+    bc_z_b(1)    = 0.0
+    bc_z_t(1)    = 2.0
+    bc_tw_g(1) = 300.0
+    phi_w =  30.0 #11.31
+    bc_uw_g(1)   = 0.0
+    bc_vw_g(1)   = 0.0
+    bc_ww_g(1)   = 0.0
+
+  # Boundary condition 1: BC_3
+    bc_type(2)   = 'NSW'
+    bc_x_e(2)    = 15.0
+    bc_x_w(2)    = 15.0
+    bc_y_s(2)    = 0.0
+    bc_y_n(2)    = 90.0
+    bc_z_b(2)    = 0.0
+    bc_z_t(2)    = 2.0
+    bc_tw_g(2) = 1000.0
+    bc_uw_g(2)   = 0.0
+    bc_vw_g(2)   = 0.0
+    bc_ww_g(2)   = 0.0
+
+# VTK outputs
+  time_dependent_filename = .True.
+  # VTK output 1: IC_1
+    vtk_filebase(1)      = 'SBC-RAD'
+    vtk_x_e(1)           = 15.0
+    vtk_x_w(1)           = 0.0
+    vtk_y_s(1)           = 0.0
+    vtk_y_n(1)           = 90.0
+    vtk_z_b(1)           = 0.0
+    vtk_z_t(1)           = 2.0
+    vtk_data(1)          = 'P'
+    vtk_dt(1)            = 0.001
+    vtk_nxs(1)           = 0
+    vtk_nys(1)           = 0
+    vtk_nzs(1)           = 0
+    vtk_part_density(1)  = .True.
+    vtk_part_diameter(1) = .True.
+    vtk_part_temp(1)     = .True.
+    vtk_part_vel(1)      = .True.
+
+
+# SPx outputs
+  spx_dt(1)  = 0.001
+  spx_dt(2)  = 0.001
+  spx_dt(3)  = 0.001
+  spx_dt(4)  = 0.001
+  spx_dt(5)  = 0.001
+  spx_dt(6)  = 0.001
+  spx_dt(7)  = 0.001
+  spx_dt(8)  = 0.001
+  spx_dt(9)  = 0.001
+  spx_dt(10) = 0.001
+  spx_dt(11) = 1.0
+
+### Residuals
+  resid_string(1) = 'T0'
+  resid_string(2) = 'T1'
+
+### Discrete element model
+  des_en_input(1)        = 0.8
+  des_en_input(2)        = 0.8
+  des_en_input(3)        = 0.8
+  des_en_wall_input(1)   = 1.0
+  des_interp_mean_fields = .True.
+  des_interp_on          = .True.
+  des_interp_scheme      = 'LINEAR_HAT'
+  gener_part_config      = .True.
+  kn                     = 100000.0
+  kn_w                   = 100000.0
+  mew                    = 0.1
+  mew_w                  = 0.1
+
+### Two-fluid model
+  c_f     = 0.1
+  ep_star = 0.5
+  phi     = 30.0
+
+### Particle-in-cell model
+  fric_exp_pic        = 3.0
+  fric_non_sing_fac   = 1.0000e-07
+  mppic_coeff_en1     = 0.8
+  mppic_coeff_en_wall = 1.0
+  mppic_coeff_et_wall = 1.0
+  mppic_velfac_coeff  = 1.0
+  psfac_fric_pic      = 10.0
+
+### UDF control
+
+#*****************************************************
+# Undocumented keys                                  *
+#*****************************************************
+  e = 0.8    #!!!!
+
+#*****************************************************
+# Miscellaneous keys                                 *
+#*****************************************************
+  c(1)            = 0.9
+  c(2)            = 1.0000e+02
+  c_name(1)       = 'Ash fraction amount'
+  c_name(2)       = 'Pseudo reaction cst.'
+  nlog            = 100
+  nrr             = 9
+  out_dt          = 0.001
+  stiff_chemistry = .False.
+
+THERMO DATA
+Coal Ash                User Defined      0.S   200.000  6000.000  B  56.00000 1
+ 8.70769880E+00 8.45407650E-03 0.00000000E+00 0.00000000E+00 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 8.70769880E+00 8.45407650E-03 0.00000000E+00    3
+ 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+CO                      User Defined      0.G   200.000  6000.000  B  28.01040 1
+ 3.04848590E+00 1.35172810E-03-4.85794050E-07 7.88536440E-11-4.69807460E-15    2
+-1.42661170E+04 6.01709770E+00 3.57953350E+00-6.10353690E-04 1.01681430E-06    3
+ 9.07005860E-10-9.04424490E-13-1.43440860E+04 3.50840930E+00-1.32936280E+04    4
+
+CO2                     User Defined      0.G   200.000  6000.000  B  44.00980 1
+ 4.63651110E+00 2.74145690E-03-9.95897590E-07 1.60386660E-10-9.16198570E-15    2
+-4.90249040E+04-1.93489550E+00 2.35681300E+00 8.98412990E-03-7.12206320E-06    3
+ 2.45730080E-09-1.42885480E-13-4.83719710E+04 9.90090350E+00-4.73281050E+04    4
+
+Fixed Carbon            User Defined      0.S   200.000  6000.000  B  12.01100 1
+-7.94079328E-01 8.09779756E-03-6.56398654E-06 1.84781958E-09 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00-7.94079328E-01 8.09779756E-03-6.56398654E-06    3
+ 1.84781958E-09 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+H2O                     User Defined      0.G   200.000  6000.000  B  18.01528 1
+ 2.67703890E+00 2.97318160E-03-7.73768890E-07 9.44335140E-11-4.26899910E-15    2
+-2.98858940E+04 6.88255000E+00 4.19863520E+00-2.03640170E-03 6.52034160E-06    3
+-5.48792690E-09 1.77196800E-12-3.02937260E+04-8.49009010E-01-2.90848170E+04    4
+
+N2                      User Defined      0.G   200.000  6000.000  B  28.01340 1
+ 2.95257637E+00 1.39690040E-03-4.92631603E-07 7.86010195E-11-4.60755204E-15    2
+-9.23948688E+02 5.87188762E+00 3.53100528E+00-1.23660988E-04-5.02999433E-07    3
+ 2.43530612E-09-1.40881235E-12-1.04697628E+03 2.96747038E+00 0.00000000E+00    4
+
+O2                      User Defined      0.G   200.000  6000.000  B  31.99880 1
+ 3.66096065E+00 6.56365811E-04-1.41149627E-07 2.05797935E-11-1.29913436E-15    2
+-1.21597718E+03 3.41536279E+00 3.78245636E+00-2.99673416E-03 9.84730201E-06    3
+-9.68129509E-09 3.24372837E-12-1.06394356E+03 3.65767573E+00 0.00000000E+00    4
+

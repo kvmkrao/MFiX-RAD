@@ -1,0 +1,268 @@
+#! File written Tue Feb 25 15:58:45 2020
+#! MFiX version 19.2.0.post0 by vkotteda on mach
+
+### Run Controls
+  description     = 'MFiX Simulation'
+  run_name        = 'case1'
+  units           = 'SI'
+  run_type        = 'new'
+  time            = 0.0
+  res_dt          = 0.1
+  batch_wallclock = 9000.0
+  chk_batchq_end  = .False.
+  energy_eq       = .False.
+  nodesi          = 2
+  nodesj          = 1
+  nodesk          = 1
+  term_buffer     = 180.0
+  full_log        = .True.
+
+### Physical parameters
+  gravity_y = 0.0
+
+### Cartesian grid
+  cartesian_grid = .False.
+  use_stl        = .False.
+
+### Numeric
+  detect_stall = .False.
+  max_nit      = 200
+  ### Discretization
+  discretize(9) = 9 
+  leq_pc(9) = 'DIAG' 
+  leq_it(9) = 200
+  leq_method(9) = 3
+  leq_tol(9)    = 1.0000e-06
+
+### Geometry
+  coordinates = 'CARTESIAN'
+  imax = 17
+  jmax = 17
+  kmax = 34
+  x_max       = 2.0
+  x_min       = 0
+  y_max       = 2.0
+  y_min       = 0
+  z_max       = 4.0
+  z_min       = 0
+
+#### Fluid
+  mu_g0            = 1.8000e-05
+  mw_avg           = 29.0
+  momentum_x_eq(0) = .False.
+  momentum_y_eq(0) = .False.
+  momentum_z_eq(0) = .False.
+  species_eq(0)    = .False.
+  nmax_g           = 3
+  # Fluid species 1: CO2
+    species_g(1)       = 'CO2'
+    species_alias_g(1) = 'CO2'
+  # Fluid species 2: H2O
+    species_g(2)       = 'H2O'
+    species_alias_g(2) = 'H2O'
+  # Fluid species 3: N2
+    species_g(3)       = 'N2'
+    species_alias_g(3) = 'N2'
+  c_pg0                = 1005.0
+  dif_g0               = 1.0000e-05
+  k_g0                 = 2.0
+  ro_g0                = 1.2005
+
+#### Solids
+  mmax = 0
+
+
+### Initial conditions
+  # Initial condition 1: IC_1
+    ic_x_e(1)               = 2.0
+    ic_x_w(1)               = 0.0 #!MFIX-GUI eq{float(xmin)}
+    ic_y_s(1)               = 0.0 #!MFIX-GUI eq{float(ymin)}
+    ic_y_n(1)               = 2.0
+    ic_z_b(1)               = 0.0 #!MFIX-GUI eq{float(zmin)}
+    ic_z_t(1)               = 4.0
+    ic_des_fit_to_region(1) = .False.
+    ic_ep_g(1)              = 1.0
+    ic_t_g(1)               = 800.0
+    ic_u_g(1)               = 0.0
+    ic_v_g(1)               = 0.0
+    ic_w_g(1)               = 0.0
+    ic_gama_rg(1)           = 0.0
+    ic_p_g(1)               = 101325.0
+    ic_t_rg(1)              = 300.0
+    ic_x_g(1,1)             = 0.1 !CO2
+    ic_x_g(1,2)             = 0.2 !H2O
+    ic_x_g(1,3)             = 0.7 !N2
+
+
+# Boundary conditions
+  # Boundary condition 1: BC_1
+    bc_type(1)  = 'NSW'
+    bc_x_e(1)   = 2.0
+    bc_x_w(1)   = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_y_s(1)   = 0.0 #!MFIX-GUI eq{float(ymin)}
+    bc_y_n(1)   = 2.0
+    bc_z_b(1)   = 0.0 #!MFIX-GUI eq{float(zmin)}
+    bc_z_t(1)   = 0.0 #!MFIX-GUI eq{float(zmin)}
+    bc_c_t_g(1) = 0.0
+    bc_jj_ps(1) = 0
+    bc_tw_g(1)  = 400.0
+    bc_uw_g(1)  = 0.0
+    bc_vw_g(1)  = 0.0
+    bc_ww_g(1)  = 0.0
+
+  # Boundary condition 2: BC_2
+    bc_type(2)  = 'NSW'
+    bc_x_e(2)   = 2.0
+    bc_x_w(2)   = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_y_s(2)   = 0.0 #!MFIX-GUI eq{float(ymin)}
+    bc_y_n(2)   = 2.0
+    bc_z_b(2)   = 4.0
+    bc_z_t(2)   = 4.0
+    bc_c_t_g(2) = 0.0
+    bc_jj_ps(2) = 0
+    bc_tw_g(2)  = 800.0
+    bc_uw_g(2)  = 0.0
+    bc_vw_g(2)  = 0.0
+    bc_ww_g(2)  = 0.0
+
+  # Boundary condition 3: BC_3
+    bc_type(3)  = 'NSW'
+    bc_x_e(3)   = 2.0
+    bc_x_w(3)   = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_y_s(3)   = 0.0 #!MFIX-GUI eq{float(ymin)}
+    bc_y_n(3)   = 0.0 #!MFIX-GUI eq{float(ymin)}
+    bc_z_b(3)   = 0.0 #!MFIX-GUI eq{float(zmin)}
+    bc_z_t(3)   = 4.0
+    bc_c_t_g(3) = 0.0
+    bc_jj_ps(3) = 0
+    bc_tw_g(3)  = 300.0
+    bc_uw_g(3)  = 0.0
+    bc_vw_g(3)  = 0.0
+    bc_ww_g(3)  = 0.0
+
+  # Boundary condition 4: BC_4
+    bc_type(4)  = 'NSW'
+    bc_x_e(4)   = 2.0
+    bc_x_w(4)   = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_y_s(4)   = 2.0
+    bc_y_n(4)   = 2.0
+    bc_z_b(4)   = 0.0 #!MFIX-GUI eq{float(zmin)}
+    bc_z_t(4)   = 4.0
+    bc_c_t_g(4) = 0.0
+    bc_jj_ps(4) = 0
+    bc_tw_g(4)  = 300.0
+    bc_uw_g(4)  = 0.0
+    bc_vw_g(4)  = 0.0
+    bc_ww_g(4)  = 0.0
+
+  # Boundary condition 5: BC_5
+    bc_type(5)  = 'NSW'
+    bc_x_e(5)   = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_x_w(5)   = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_y_s(5)   = 0.0 #!MFIX-GUI eq{float(ymin)}
+    bc_y_n(5)   = 2.0
+    bc_z_b(5)   = 0.0 #!MFIX-GUI eq{float(zmin)}
+    bc_z_t(5)   = 4.0
+    bc_c_t_g(5) = 0.0
+    bc_jj_ps(5) = 0
+    bc_tw_g(5)  = 300.0
+    bc_uw_g(5)  = 0.0
+    bc_vw_g(5)  = 0.0
+    bc_ww_g(5)  = 0.0
+
+  # Boundary condition 6: BC_6
+    bc_type(6)  = 'NSW'
+    bc_x_e(6)   = 2.0
+    bc_x_w(6)   = 2.0
+    bc_y_s(6)   = 0.0 #!MFIX-GUI eq{float(ymin)}
+    bc_y_n(6)   = 2.0
+    bc_z_b(6)   = 0.0 #!MFIX-GUI eq{float(zmin)}
+    bc_z_t(6)   = 4.0
+    bc_c_t_g(6) = 0.0
+    bc_jj_ps(6) = 0
+    bc_tw_g(6)  = 300.0
+    bc_uw_g(6)  = 0.0
+    bc_vw_g(6)  = 0.0
+    bc_ww_g(6)  = 0.0
+
+
+# SPx outputs
+  spx_dt(1) = 0.1
+  spx_dt(2) = 0.1
+  spx_dt(3) = 0.1
+  spx_dt(4) = 0.1
+  spx_dt(5) = 0.1
+  spx_dt(6) = 0.1
+  spx_dt(7) = 0.1
+  spx_dt(8) = 0.1
+  spx_dt(9) = 0.1
+
+### Residuals
+  resid_string(1) = 'P0'
+  resid_string(2) = 'P1'
+  resid_string(3) = 'U0'
+  resid_string(4) = 'V0'
+  resid_string(5) = 'U1'
+
+### Discrete element model
+  des_en_input(1)      = 0.9
+  des_en_wall_input(1) = 0.9
+  kn                   = 1000
+  kn_w                 = 1000
+  mew                  = 0.1
+  mew_w                = 0.1
+
+### Two-fluid model
+  c_e            = 0.95
+  c_f            = 0.1
+  ep_star        = 1.0
+  friction_model = 'SCHAEFFER'
+  kt_type        = 'ALGEBRAIC'
+  phi            = 30.0
+  phi_w          = 11.3
+
+### UDF control
+ Nrr  = 5
+#*****************************************************
+# Undocumented keys                                  *
+#*****************************************************
+  pafc          = 0.6    #!!!!
+  rad_emis_w(1) = 1.0    #!!!!
+  rad_emis_w(2) = 1.0    #!!!!
+  rad_emis_w(3) = 1.0    #!!!!
+  rad_emis_w(4) = 1.0    #!!!!
+  rad_emis_w(5) = 1.0    #!!!!
+  rad_emis_w(6) = 1.0    #!!!!
+  rad_nrr       = 1      #!!!!
+  rad_on        = .True. #!!!!
+  rad_rte       = 'PMC'  # 'P1'    #!!!!
+  rad_skip      = 0      #!!!!
+  rad_nquad = 1
+!  rad_spectral  = 'GRAY-WSGG'    #!!!!
+  rad_spectral  = 'GRAY-CONST'    #!!!!
+  rad_spl       = 1.0    #!!!!
+  rad_wsgg ="SMITH82"
+  const_absg = 0.1
+
+#*****************************************************
+# Miscellaneous keys                                 *
+#*****************************************************
+  call_usr = .True.
+  nrr      = 1
+
+THERMO DATA
+CO2                     User Defined      0.G   200.000  6000.000  B  44.00980 1
+ 4.63651110E+00 2.74145690E-03-9.95897590E-07 1.60386660E-10-9.16198570E-15    2
+-4.90249040E+04-1.93489550E+00 2.35681300E+00 8.98412990E-03-7.12206320E-06    3
+ 2.45730080E-09-1.42885480E-13-4.83719710E+04 9.90090350E+00-4.73281050E+04    4
+
+H2O                     User Defined      0.G   200.000  6000.000  B  18.01528 1
+ 2.67703890E+00 2.97318160E-03-7.73768890E-07 9.44335140E-11-4.26899910E-15    2
+-2.98858940E+04 6.88255000E+00 4.19863520E+00-2.03640170E-03 6.52034160E-06    3
+-5.48792690E-09 1.77196800E-12-3.02937260E+04-8.49009010E-01-2.90848170E+04    4
+
+N2                      User Defined      0.G   200.000  6000.000  B  28.01340 1
+ 2.95257637E+00 1.39690040E-03-4.92631603E-07 7.86010195E-11-4.60755204E-15    2
+-9.23948688E+02 5.87188762E+00 3.53100528E+00-1.23660988E-04-5.02999433E-07    3
+ 2.43530612E-09-1.40881235E-12-1.04697628E+03 2.96747038E+00 0.00000000E+00    4
+

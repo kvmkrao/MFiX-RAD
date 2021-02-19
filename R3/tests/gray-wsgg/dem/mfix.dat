@@ -1,0 +1,378 @@
+########################################################################
+#  Simple 2D Bed Gasification problem                                  #
+#                                                                      #
+# Author:  V. Kotteda                                  Date:  1-07-19  #
+#                                                                      #
+########################################################################
+
+#_______________________________________________________________________
+# RUN CONTROL SECTION
+
+  Run_name    = '2D-Rad'
+  Description = 'Simple 2D Bed'
+  Units       = 'cgs'
+  Run_type    = 'new'
+
+  Time  = 0.0
+  max_nit = 200000
+
+  energy_eq = .True.
+
+  species_eq(0) = .False.
+  species_eq(1) = .False.
+  species_eq(2) = .False.
+
+  momentum_x_eq(0) = .False.
+  momentum_x_eq(1) = .False.
+  momentum_x_eq(2) = .False.
+  momentum_y_eq(0) = .False.
+  momentum_y_eq(1) = .False.
+  momentum_y_eq(2) = .False.
+
+  CALL_USR = .T.
+
+  C(1) =  0.9     C_NAME(1) = 'Ash fraction amount'
+  C(2) =  1.0E2   C_NAME(2) = 'Pseudo reaction cst.'
+
+  PAFC =  0.6 ! Proximate analysis - Fixed Carbon
+  
+  # Radiation stuff
+  RAD_ON = .True.
+  RAD_EMIS_W = 1.0 1.0 1.0 1.0
+  RAD_T_W = 300 300 1000 1000
+  RAD_NQUAD = 1
+  RAD_SKIP = 0
+  RAD_NRR = 1 
+  RAD_RTE = 'P1' 
+  RAD_SPECTRAL = 'GRAY-WSGG'
+  RAD_WSGG = 'SMITH82'
+  RAD_SPL  = 23.14  
+  rad_nquad     = 1 
+  const_sfp   = 0.4
+  const_emisp = 0.6
+  const_absg  = 0.2
+
+#_______________________________________________________________________
+# NUMERICAL SECTION
+
+! Normalize gas phase continuity residual
+  NORM_g = 0.0
+
+! Normalize solids phase continuity residuals
+  NORM_s = 0.0
+
+#_______________________________________________________________________
+# GEOMETRY SECTION 
+
+  coordinates = 'Cartesian'
+
+  IMAX = 30
+  XLENGTH = 15.0
+
+  JMAX    = 90
+  YLENGTH = 90.0
+
+  NO_K = .T.
+
+  NODESi = 1
+  NODESj = 1
+  NODESk = 1
+
+#_______________________________________________________________________
+# MATERIAL SECTION
+
+! Gas Section
+!---------------------------------------------------------------------//
+  NMAX_g = 5
+  RO_g0 =   0.0   ! Density set to 0 to turn off interphase momentum
+  MU_g0 =   1.8d-5  ! Viscosity [Pa-s]
+  C_pg0 =   1020.0  ! Gas specific heat [J/kg-K](air @ ~450K)
+  K_g0  =   370.0  ! Gas thermal cond [W/m-K]  air @ ~450K)
+
+  SPECIES_g(1) = 'O2'             SPECIES_ALIAS_g(1) = 'O2'
+  SPECIES_g(2) = 'CO'             SPECIES_ALIAS_g(2) = 'CO'
+  SPECIES_g(3) = 'CO2'            SPECIES_ALIAS_g(3) = 'CO2'
+  SPECIES_g(4) = 'H2O'            SPECIES_ALIAS_g(4) = 'H2O'
+  SPECIES_g(5) = 'N2'             SPECIES_ALIAS_g(5) = 'N2'
+
+! Particle Section
+!---------------------------------------------------------------------//
+
+  EP_star = 0.5
+  e       = 0.8
+  C_f     = 0.1
+  Phi     = 30.0
+
+  MMAX = 1
+  particles = 2700 !4425    !4263  !5000    ! Number of particles.
+
+! Particle-particle:
+  kn = 100000.0    ! Normal collision spring constant
+  mew = 0.1    ! Friction coefficient
+
+! Particle-wall
+  kn_w = 100000.0    ! Normal collision spring constant
+  mew_w = 0.1    ! Friction coefficient
+
+! Restitution coefficients
+  des_en_input(1) = 0.8   ! e11
+  DES_EN_INPUT(2) = 0.8
+  DES_EN_INPUT(3) = 0.8
+
+  DES_Em(1) = 0.6            #!  solids phase emissivity
+
+  IC_THETA_M(1,1) = 600.0 ! default granular temperature 
+  des_interp_on = .False.
+  des_interp_scheme = 'NONE'
+
+! Solids phase 1
+!---------------------------------------------------------------------//
+  solids_model(1) = 'DEM'
+  D_p0(1) = 0.5
+  RO_s0(1)     = 1.0
+  K_s0(1)   = 1.05  ! Thermal conductivity [W/m-K]
+
+  ! Specify actual material properties.  These are used to correct for the
+  ! unrealistically large contact areas that arise due to artificial
+  ! collision softening.
+  ! Note that the LSD collision model is used and these terms are only
+  ! used to correct the heat transfer
+  EW_YOUNG_ACTUAL = 70.0D9
+  E_YOUNG_ACTUAL(1) = 70.0D9
+  v_poisson_ACTUAL(1) = 0.3
+  vw_poisson_actual = 0.3
+
+
+  NMAX_s(1)      = 2
+  SPECIES_s(1,1) = 'Fixed Carbon'   SPECIES_ALIAS_s(1,1) = 'FC1'
+  SPECIES_s(1,2) = 'Coal Ash'       SPECIES_ALIAS_s(1,2) = 'Ash1'
+
+! Solids phase 2
+!---------------------------------------------------------------------//
+#_______________________________________________________________________
+# INITIAL CONDITIONS SECTION
+
+! Bed
+!---------------------------------------------------------------------//
+  IC_X_w(1) = 0.0
+  IC_X_e(1) = 15.0
+
+  IC_Y_s(1) = 0.0
+  IC_Y_n(1) = 45.0
+
+  IC_EP_g(1)   = 0.86904762 !0.786
+  ic_ep_s(1,1) = 0.13095238 !0.214
+  ic_w_g(1) = 0.0
+  ic_gama_rg(1) = 0.0
+  ic_t_rg(1) = 600.15
+  ic_w_s(1,1) = 0.0
+  ic_u_s(1,2) = 0.0
+  ic_v_s(1,2) = 0.0
+  ic_w_s(1,2) = 0.0
+  ic_x_s(1,2,1) = 0.5
+  ic_x_s(1,2,2) = 0.5
+  ic_gama_rs(1,1) = 0.0
+  ic_gama_rs(1,2) = 0.0
+  ic_t_rs(1,1) = 600.0
+  ic_t_rs(1,2) = 600.0
+
+  ic_p_star(1) = 0.0
+  ic_p_g(1) = 1013250 
+
+!  IC_ROP_s(1,1) = 0.5 ! intial bulk density of solids rho_s * eps_s
+!  IC_ROP_s(1,2) = 0.0
+
+  IC_T_g(1)   = 600.0 ! (K)
+  IC_T_s(1,1) = 600.0 ! (K)
+  IC_T_s(1,2) = 600.0 ! (K)
+
+  IC_U_g(1) = 0.0    ! (cm/sec)
+  IC_V_g(1) = 0.0   ! (cm/sec)
+
+  IC_X_g(1,1) = 0.00   ! O2
+  IC_X_g(1,2) = 0.00   ! CO
+  IC_X_g(1,3) = 0.50   ! CO2
+  IC_X_g(1,4) = 0.50   ! H2O
+  IC_X_g(1,5) = 0.00   ! Soot
+
+  IC_U_s(1,1)  = 0.0
+  IC_V_s(1,1)  = 0.0
+
+  ic_x_s(1,1,1) = 0.50 ! Fixed Carbon
+  ic_x_s(1,1,2) = 0.50 ! Ash
+
+  IC_X_w(2) = 0.0
+  IC_X_e(2) = 15.0
+
+  IC_Y_s(2) = 45.0
+  IC_Y_n(2) = 90.0
+
+  IC_EP_g(2)   = 0.86904762 !0.786
+  ic_ep_s(2,1) = 0.13095238 !0.214
+  ic_w_g(2) = 0.0
+  ic_gama_rg(2) = 0.0
+  ic_t_rg(2) =800.00
+  ic_w_s(2,1) = 0.0
+  ic_u_s(2,2) = 0.0
+  ic_v_s(2,2) = 0.0
+  ic_w_s(2,2) = 0.0
+  ic_x_s(2,2,1) = 0.5
+  ic_x_s(2,2,2) = 0.5
+  ic_gama_rs(2,1) = 0.0
+  ic_gama_rs(2,2) = 0.0
+  ic_t_rs(2,1) = 600.15
+  ic_t_rs(2,2) = 600.15
+
+  ic_p_star(2) = 0.0
+  ic_p_g(2) = 1013250
+
+!  IC_ROP_s(2,1) = 0.5 ! intial bulk density of solids rho_s * eps_s
+!  IC_ROP_s(2,2) = 0.0
+
+  IC_T_g(2)   = 800.0 ! (K)
+  IC_T_s(2,1) = 600.0 ! (K)
+  IC_T_s(2,2) = 600.0 ! (K)
+
+  IC_U_g(2) = 0.0    ! (cm/sec)
+  IC_V_g(2) = 0.0   ! (cm/sec)
+
+  IC_X_g(2,1) = 0.00   ! O2
+  IC_X_g(2,2) = 0.00   ! CO
+  IC_X_g(2,3) = 0.50   ! CO2
+  IC_X_g(2,4) = 0.50   ! H2O
+  IC_X_g(2,5) = 0.00   ! Soot
+
+  IC_U_s(2,1)  = 0.0
+  IC_V_s(2,1)  = 0.0
+
+  ic_x_s(2,1,1) = 0.50 ! Fixed Carbon
+  ic_x_s(2,1,2) = 0.50 ! Ash
+
+#_______________________________________________________________________
+# BOUNDARY CONDITIONS SECTION
+
+! Wall
+!---------------------------------------------------------------------//
+
+  BC_X_w(1)  =  0.0
+  BC_X_e(1)  =  0.0
+  BC_Y_s(1)  =  0.0
+  BC_Y_n(1)  =  90.0
+
+  BC_TYPE(1)   = 'NSW' ! no slip for velocity, othe variables see below
+
+  BC_Tw_g(1)     = 300.0
+  BC_Tw_s(1,1)   = 300.0
+  bc_c_t_s(1,1)  = 0.0
+
+!
+  BC_X_w(2)  =  15.0
+  BC_X_e(2)  =  15.0
+  BC_Y_s(2)  =  0.0
+  BC_Y_n(2)  =  90.0
+
+  BC_TYPE(2)    = 'NSW' ! no slip for velocity, othe variables see below
+
+  BC_Tw_g(2)    = 1000.0
+  BC_Tw_s(2,1)  = 1000.0
+  bc_c_t_s(2,1) = 0.0
+
+#_______________________________________________________________________
+# OUTPUT CONTROL SECTION
+
+  OUT_DT = 0.01
+  RES_DT = 0.01
+
+  SPX_DT(1)  = 0.01   ! EP_g 
+  SPX_DT(2)  = 0.01  ! P_g, P_star 
+  SPX_DT(3)  = 0.01   ! U_g, V_g, W_g
+  SPX_DT(4)  = 0.01   ! U_s, V_s, W_s
+  SPX_DT(5)  = 0.01  ! ROP_s
+  SPX_DT(6)  = 0.01  ! T_g, T_s
+  SPX_DT(7)  = 0.01  ! X_g, X_s
+  SPX_DT(8)  = 0.01   ! theta
+  SPX_DT(9)  = 0.01   ! Scalar
+  SPX_DT(10) = 0.01   ! Reaction Rates
+
+  RESID_STRING  = 'T0', 'T1'
+
+  nRR = 9 ! Number of reaction rates to write to .SPA
+
+  NLOG = 100
+  FULL_LOG = .T.
+  WRITE_DASHBOARD = .T.
+  group_resid = .True.    ! Group residuals by equation
+
+  print_des_data = .False.    ! write DES vtk files
+
+  write_vtk_files = .True.
+
+! Save particle data over a small rectangular region
+
+  enable_dmp_log = .False.
+  chk_batchq_end = .False.
+  kt_fac = 0.2857142857142857 #!MFIX-GUI eq{2/7,float}
+  kt_w_fac = 0.2857142857142857 #!MFIX-GUI eq{2/7,float}
+  des_etat_fac = 0.5
+  des_etat_w_fac = 0.5
+  des_en_wall_input(1) = 1.0
+  des_interp_mean_fields = .False.
+  cartesian_grid = .False.
+  use_stl = .False.
+
+  stiff_chemistry = .False.
+  des_explicitly_coupled = .True.
+
+  vtk_data(1) = 'P'
+  vtk_x_w(1) = 0.0 #!MFIX-GUI eq{xmin,float}
+  vtk_y_s(1) = 0.0 #!MFIX-GUI eq{ymin,float}
+  vtk_x_e(1) = 15.0 #!MFIX-GUI eq{xmax,float}
+  vtk_y_n(1) = 90.0 #!MFIX-GUI eq{ymax,float}
+  vtk_filebase(1) = 'SBC-RAD'
+  vtk_dt(1) = 0.01
+  vtk_nxs(1) = 0
+  vtk_nys(1) = 0
+  vtk_nzs(1) = 0
+  vtk_part_diameter(1) = .True.
+  vtk_part_vel(1) = .True.
+  vtk_part_temp(1) = .True.
+
+  time_dependent_filename = .True.
+  gener_part_config = .True.
+  IC_THETA_M(1,2) = 600.0
+  IC_THETA_M(2,1) = 600.0 
+  DES_MIN_COND_DIST = 0.01
+  ro_g0 = 1
+  vtk_part_density(1) = .True.
+  res_dt = 0.001
+  vtk_dt(1) = 0.001
+  spx_dt(1) = 0.001
+  spx_dt(2) = 0.001
+  spx_dt(3) = 0.001
+  spx_dt(4) = 0.001
+  spx_dt(5) = 0.001
+  spx_dt(6) = 0.001
+  spx_dt(9) = 0.001
+  spx_dt(8) = 0.001
+  spx_dt(7) = 0.001
+  spx_dt(10) = 0.001
+  spx_dt(11) = 0.001
+
+  energy_eq = False
+  energy_eq = .False.
+
+#_______________________________________________________________________
+THERMO DATA
+
+The following are coal pseudo species specifications.  Replace these
+with appropriate coal properties.  Also define the heat of formation (Hf298)
+values (the fifteenth coefficient).  The readme file describes the data format.
+Fixed Carbon               WARNING!       0.S   200.000  6000.000  B  12.01100 1
+-7.94079328E-01 8.09779756E-03-6.56398654E-06 1.84781958E-09 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00-7.94079328E-01 8.09779756E-03-6.56398654E-06    3
+ 1.84781958E-09 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+Coal Ash                   WARNING!       0.S   200.000  6000.000  B  56.00000 1
+ 8.70769880E+00 8.45407650E-03 0.00000000E+00 0.00000000E+00 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 8.70769880E+00 8.45407650E-03 0.00000000E+00    3
+ 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4

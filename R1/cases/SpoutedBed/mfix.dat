@@ -1,0 +1,510 @@
+########################################################################
+#  Spouted Bed Combustor                                               #
+#                                                                      #
+# Author:  E.F. Modeler                                Date:  9-28-94  #
+# Modified: J. Musser                                  Date: 10-10-12  #
+#                                                                      #
+# Approximate Run time: 2.5 Hours                                      #
+#                                                                      #
+########################################################################
+
+#_______________________________________________________________________
+# RUN CONTROL SECTION
+
+  run_name = 'sbc-Rad'
+  description = 'Spouted Bed Combustor Simple'
+  units = 'SI'
+  run_type = 'new'
+
+  time = 0.0
+  tstop = 20.0
+  dt = 1.0000e-04
+
+  energy_eq = .True.
+  species_eq(0) = .True.
+  species_eq(1) = .True.
+  species_eq(2) = .True.
+
+  call_usr = .True.
+
+  c(1) = 0.9
+  c_name(1) = 'Ash fraction amount'
+  c(2) = 1.0000e+02
+  c_name(2) = 'Pseudo reaction cst.'
+
+  pafc = 0.6    ! Proximate analysis - Fixed Carbon
+
+# Radiation stuff
+  rad_on = .True.
+  rad_emis_w(1) = 1.0
+  rad_emis_w(2) = 1.0
+  rad_emis_w(3) = 1.0
+  rad_emis_w(4) = 1.0
+  rad_t_w(1) = 300
+  rad_t_w(2) = 300
+  rad_t_w(3) = 800
+  rad_t_w(4) = 800
+  rad_nquad = 1
+  rad_skip = 0
+  rad_nrr = 10
+  rad_rte = 'P1'
+  rad_spectral = 'GRAY'
+
+#_______________________________________________________________________
+# NUMERICAL SECTION
+
+! Normalize gas phase continuity residual
+  norm_g = 0.0
+
+! Normalize solids phase continuity residuals
+  norm_s = 0.0
+
+! Under relaxation factors
+  ur_fac(1) = 0.7    ! gas pressure
+  ur_fac(3) = 0.3    ! gas and solids u-momentum
+  ur_fac(4) = 0.3    ! gas and solids v-momentum
+
+! Compute ep_star using Yu_Standish correlation
+  yu_standish = .True.
+
+#_______________________________________________________________________
+# GEOMETRY SECTION
+
+  coordinates = 'Cylindrical'
+
+  imax = 20
+
+  jmax = 60
+
+  no_k = .True.
+
+  nodesi = 4
+  nodesj = 1
+  nodesk = 1
+
+#_______________________________________________________________________
+# MATERIAL SECTION
+
+! Gas Section
+!---------------------------------------------------------------------//
+  nmax_g = 5
+
+  species_g(1) = 'O2'
+  species_alias_g(1) = 'O2'
+  species_g(2) = 'CO'
+  species_alias_g(2) = 'CO'
+  species_g(3) = 'CO2'
+  species_alias_g(3) = 'CO2'
+  species_g(4) = 'N2'
+  species_alias_g(4) = 'N2'
+  species_g(5) = 'Soot'
+  species_alias_g(5) = 'Soot'
+
+! Particle Section
+!---------------------------------------------------------------------//
+
+  ep_star = 0.5
+  e = 0.8
+  c_f = 0.1
+  phi = 30.0
+
+  mmax = 2
+
+! Solids phase 1
+!---------------------------------------------------------------------//
+  d_p0(1) = 0.001
+  ro_s0(1) = 1000.0
+
+  nmax_s(1) = 2
+  species_s(1,1) = 'Fixed Carbon'
+  species_alias_s(1,1) = 'FC1'
+  species_s(1,2) = 'Coal Ash'
+  species_alias_s(1,2) = 'Ash1'
+
+! Solids phase 2
+!---------------------------------------------------------------------//
+
+  d_p0(2) = 0.001
+  ro_s0(2) = 1000.0
+
+  nmax_s(2) = 2
+  species_s(2,1) = 'Fixed Carbon'
+  species_alias_s(2,1) = 'FC2'
+  species_s(2,2) = 'Coal Ash'
+  species_alias_s(2,2) = 'Ash2'
+
+#_______________________________________________________________________
+# INITIAL CONDITIONS SECTION
+
+! Bed
+!---------------------------------------------------------------------//
+
+  ic_x_w(1) = 0.0
+  ic_x_e(1) = 0.1
+
+  ic_y_s(1) = 0.0
+  ic_y_n(1) = 0.2
+
+  ic_ep_g(1) = 0.5
+
+  ic_p_star(1) = 0.0
+
+  ic_t_g(1) = 1000.0    ! (K)
+  ic_t_s(1,1) = 1000.0    ! (K)
+  ic_t_s(1,2) = 1000.0    ! (K)
+
+  ic_u_g(1) = 0.0    ! (cm/sec)
+  ic_v_g(1) = 0.3    ! (cm/sec)
+
+  ic_x_g(1,1) = 0.0    ! O2
+  ic_x_g(1,2) = 0.0    ! CO
+  ic_x_g(1,3) = 0.0    ! CO2
+  ic_x_g(1,4) = 1.0    ! N2
+  ic_x_g(1,5) = 0.0    ! Soot
+
+  ic_u_s(1,1) = 0.0
+  ic_v_s(1,1) = 0.01
+
+  ic_x_s(1,1,1) = 0.1    ! Fixed Carbon
+  ic_x_s(1,1,2) = 0.9    ! Ash
+
+! Freeboard
+!---------------------------------------------------------------------//
+  ic_x_w(2) = 0.0
+  ic_x_e(2) = 0.1
+
+  ic_y_s(2) = 0.2
+  ic_y_n(2) = 0.6
+
+  ic_ep_g(2) = 1.0
+
+  ic_t_g(2) = 1000.0    ! (K)
+
+  ic_u_g(2) = 0.0    ! (cm/sec)
+  ic_v_g(2) = 0.3    ! (cm/sec)
+
+  ic_x_g(2,1) = 0.0    ! O2
+  ic_x_g(2,2) = 0.0    ! CO
+  ic_x_g(2,3) = 0.0    ! CO2
+  ic_x_g(2,4) = 1.0    ! N2
+  ic_x_g(2,5) = 0.0    ! Soot
+
+#_______________________________________________________________________
+# BOUNDARY CONDITIONS SECTION
+
+! Gas Inlet           Jet      Annulus
+!---------------------------------------------------------------------//
+  bc_x_w(1) = 0.0
+  bc_x_w(2) = 0.01
+  bc_x_e(1) = 0.01
+  bc_x_e(2) = 0.1
+  bc_y_s(1) = 0.0
+  bc_y_s(2) = 0.0
+  bc_y_n(1) = 0.0
+  bc_y_n(2) = 0.0
+
+  bc_type(1) = 'MI'
+  bc_type(2) = 'MI'
+
+!                       Gas/      Gas
+!                      Solids     Only
+  bc_ep_g(1) = 0.998
+  bc_ep_g(2) = 1.0
+
+  bc_p_g(1) = 101000.0    ! (Barye) -> ~1 atm
+  bc_p_g(2) = 101000.0    ! (Barye) -> ~1 atm
+  bc_t_g(1) = 300.0    ! (K)
+  bc_t_g(2) = 300.0    ! (K)
+  bc_u_g(1) = 0.0    ! (cm/sec)
+  bc_u_g(2) = 0.0    ! (cm/sec)
+  bc_massflow_g(1) = 0.001    ! (g/sec)
+  bc_massflow_g(2) = 0.0116    ! (g/sec)
+  bc_x_g(1,1) = 0.2    ! O2
+  bc_x_g(2,1) = 0.2    ! O2
+  bc_x_g(1,2) = 0.0    ! CO
+  bc_x_g(2,2) = 0.0    ! CO
+  bc_x_g(1,3) = 0.0    ! CO2
+  bc_x_g(2,3) = 0.0    ! CO2
+  bc_x_g(1,4) = 0.8    ! N2
+  bc_x_g(2,4) = 0.8    ! N2
+  bc_x_g(1,5) = 0.0    ! Soot
+  bc_x_g(2,5) = 0.0    ! Soot
+
+  bc_massflow_s(1,2) = 0.0018    ! -0-
+  bc_t_s(1,2) = 300.0    ! -0-    ! (K)
+  bc_u_s(1,2) = 0.0    ! -0-
+
+  bc_x_s(1,2,1) = 0.6    ! -0-
+  bc_x_s(1,2,2) = 0.4    ! -0-
+
+! Pressure Outlet
+!---------------------------------------------------------------------//
+  bc_x_w(3) = 0.0
+  bc_x_e(3) = 0.1
+  bc_y_s(3) = 0.6
+  bc_y_n(3) = 0.6
+
+  bc_type(3) = 'PO'
+  bc_p_g(3) = 101000.0    ! (Barye) -> ~1 atm
+
+! Wall
+!---------------------------------------------------------------------//
+
+!
+  bc_x_w(4) = 0.1
+  bc_x_e(4) = 0.1
+  bc_y_s(4) = 0.0
+  bc_y_n(4) = 0.6
+
+  bc_type(4) = 'NSW'    ! no slip for velocity, othe variables see below
+
+! Adiabtic wall for convective heat transfer: dT/dn + hw * (T-Tw) = C = 0
+  bc_hw_t_g(4) = 0.0
+  bc_hw_t_s(4,1) = 0.0
+  bc_hw_t_s(4,2) = 0.0
+  bc_c_t_g(4) = 0.0
+  bc_c_t_s(4,1) = 0.0
+  bc_c_t_s(4,2) = 0.0
+! ... but specify a wall temperature for Radiation
+  bc_tw_g(4) = 800.0
+  bc_tw_s(4,1) = 800.0
+  bc_tw_s(4,2) = 800.0
+
+! zero gradient for gas phase species dXg/dn + hw * (Xg-Xgw) = C = 0
+  bc_hw_x_g(4,1) = 0.0
+  bc_hw_x_g(4,2) = 0.0
+  bc_hw_x_g(4,3) = 0.0
+  bc_hw_x_g(4,4) = 0.0
+  bc_hw_x_g(4,5) = 0.0
+  bc_c_x_g(4,1) = 0
+  bc_c_x_g(4,2) = 0
+  bc_c_x_g(4,3) = 0
+  bc_c_x_g(4,4) = 0
+  bc_c_x_g(4,5) = 0
+
+! zero gradient for solid phase species dXs/dn + hw * (Xs-Xsw) = C = 0
+  bc_hw_x_s(4,1,1) = 0.0
+  bc_hw_x_s(4,1,2) = 0.0
+  bc_c_x_s(4,1,1) = 0.0
+  bc_c_x_s(4,1,2) = 0.0
+  bc_hw_x_s(4,2,1) = 0.0
+  bc_hw_x_s(4,2,2) = 0.0
+  bc_c_x_s(4,2,1) = 0.0
+  bc_c_x_s(4,2,2) = 0.0
+
+#_______________________________________________________________________
+
+  stiff_chemistry = .True.
+
+#_______________________________________________________________________
+# OUTPUT CONTROL SECTION
+
+  out_dt = 0.01
+  res_dt = 0.1
+
+  spx_dt(1) = 0.005    ! EP_g
+  spx_dt(2) = 0.005    ! P_g, P_star
+  spx_dt(3) = 0.005    ! U_g, V_g, W_g
+  spx_dt(4) = 0.005    ! U_s, V_s, W_s
+  spx_dt(5) = 0.005    ! ROP_s
+  spx_dt(6) = 0.005    ! T_g, T_s
+  spx_dt(7) = 0.005    ! X_g, X_s
+  spx_dt(8) = 0.005    ! theta
+  spx_dt(9) = 0.005    ! Scalar
+  spx_dt(10) = 0.005    ! Reaction Rates
+
+  resid_string(1) = 'P0'
+  resid_string(2) = 'V0'
+  resid_string(3) = 'V1'
+  resid_string(4) = 'V2'
+  resid_string(5) = 'T0'
+  resid_string(6) = 'T1'
+  resid_string(7) = 'T2'
+
+  nrr = 19    ! Number of reaction rates to write to .SPA
+
+  nlog = 100
+  full_log = .True.
+  write_dashboard = .True.
+
+#_______________________________________________________________________
+  drag_c1 = 0.8
+  drag_d1 = 2.65
+  solids_model(1) = 'TFM'
+  solids_model(2) = 'TFM'
+  ic_ep_s(2,1) = 0.0
+  ic_ep_s(2,2) = 0.0
+  bc_ep_s(2,1) = 0.0
+  bc_ep_s(2,2) = 0.0
+  bc_ep_s(1,1) = 0.0
+  bc_ep_s(1,2) = 0.002
+  ic_ep_s(1,1) = 0.5
+  ic_ep_s(1,2) = 0.0
+  x_min = 0
+  x_max = 0.1
+  y_min = 0
+  y_max = 0.6
+  ic_w_g(1) = 0.0
+  ic_gama_rg(1) = 0.0
+  ic_t_rg(1) = 293.15
+  ic_w_s(1,1) = 0.0
+  ic_u_s(1,2) = 0.0
+  ic_v_s(1,2) = 0.0
+  ic_w_s(1,2) = 0.0
+  ic_x_s(1,2,1) = 0.0
+  ic_x_s(1,2,2) = 1.0
+  ic_des_fit_to_region(1) = .False.
+  ic_gama_rs(1,1) = 0.0
+  ic_gama_rs(1,2) = 0.0
+  ic_t_rs(1,1) = 293.15
+  ic_t_rs(1,2) = 293.15
+  ic_w_g(2) = 0.0
+  ic_gama_rg(2) = 0.0
+  ic_t_rg(2) = 293.15
+  ic_t_s(2,1) = 293.15
+  ic_t_s(2,2) = 293.15
+  ic_u_s(2,1) = 0.0
+  ic_v_s(2,1) = 0.0
+  ic_w_s(2,1) = 0.0
+  ic_u_s(2,2) = 0.0
+  ic_v_s(2,2) = 0.0
+  ic_w_s(2,2) = 0.0
+  ic_x_s(2,1,1) = 0.0
+  ic_x_s(2,1,2) = 1.0
+  ic_x_s(2,2,1) = 0.0
+  ic_x_s(2,2,2) = 1.0
+  ic_des_fit_to_region(2) = .False.
+  ic_gama_rs(2,1) = 0.0
+  ic_gama_rs(2,2) = 0.0
+  ic_t_rs(2,1) = 293.15
+  ic_t_rs(2,2) = 293.15
+  bc_w_g(1) = 0.0
+  bc_u_s(1,1) = 0.0
+  bc_v_s(1,1) = 0.0
+  bc_w_s(1,1) = 0.0
+  bc_w_s(1,2) = 0.0
+  bc_t_s(1,1) = 293.15
+  bc_x_s(1,1,1) = 0.0
+  bc_x_s(1,1,2) = 1.0
+  bc_w_g(2) = 0.0
+  bc_u_s(2,1) = 0.0
+  bc_u_s(2,2) = 0.0
+  bc_v_s(2,1) = 0.0
+  bc_v_s(2,2) = 0.0
+  bc_w_s(2,1) = 0.0
+  bc_w_s(2,2) = 0.0
+  bc_t_s(2,1) = 293.15
+  bc_t_s(2,2) = 293.15
+  bc_x_s(2,1,1) = 0.0
+  bc_x_s(2,1,2) = 1.0
+  bc_x_s(2,2,1) = 0.0
+  bc_x_s(2,2,2) = 1.0
+  bc_jj_ps(4) = 0
+  cartesian_grid = .False.
+  use_stl = .False.
+
+# CHEMICAL REACTION SECTION
+@(RXNS)
+Combustion_s1 {
+    chem_eq = "2*FC1 + O2 --> 2*CO"
+}
+Combustion_s2 {
+    chem_eq = "2*FC2 + O2 --> 2*CO"
+}
+Char_CO2_s1 {
+    chem_eq = "FC1 + CO2 --> 2*CO"
+}
+Char_CO2_s1r {
+    chem_eq = "2*CO --> Soot + CO2"
+}
+Char_CO2_s2 {
+    chem_eq = "FC2 + CO2 --> 2*CO"
+}
+Char_CO2_s2r {
+    chem_eq = "2*CO --> Soot + CO2"
+}
+CO_Combustion {
+    chem_eq = "CO + 0.5*O2 --> CO2"
+}
+Char_to_Char {
+    chem_eq = "FC2 --> FC1"
+}
+Ash_to_Ash {
+    chem_eq = "Ash2 --> Ash1"
+}
+@(END)
+
+#!MFIX-GUI SECTION
+#!MFIX-GUI project_version = 1
+#!MFIX-GUI gui_version = 18.1.5.post0
+#!MFIX-GUI project_notes = ""
+#!MFIX-GUI modified_by = vkotteda
+#!MFIX-GUI geometry = {"geometry_dict": {}, "tree": {}}
+#!MFIX-GUI visual_props = {"mesh": {"color": "#f44328", "visible": true,
+#!MFIX-GUI   "opacity": 1, "rep": "wire", "edge": "#7a2114"}, "background_mesh":
+#!MFIX-GUI   {"color": "#64b6f7", "visible": true, "opacity": 1, "rep": "wire",
+#!MFIX-GUI   "edge": "#325b7b"}, "geometry": {"color": "#e0e0e0", "visible":
+#!MFIX-GUI   true, "opacity": 1, "rep": "wire", "edge": "#707070"}, "regions":
+#!MFIX-GUI   {"color": "#e0e0e0", "visible": true, "opacity": 0.5, "rep":
+#!MFIX-GUI   "solid", "edge": "#707070"}}
+#!MFIX-GUI regions_dict = {"order": ["IC_1", "IC_2", "BC_1", "BC_2", "BC_3",
+#!MFIX-GUI   "BC_4"], "regions": {"IC_1": {"to": [0.1, 0.2, 0.0], "color":
+#!MFIX-GUI   "#65b179", "type": "XY-plane"}, "IC_2": {"to": [0.1, 0.6, 0.0],
+#!MFIX-GUI   "from": [0.0, 0.2, 0.0], "color": "#b6c1e4", "type": "XY-plane"},
+#!MFIX-GUI   "BC_1": {"to": [0.01, 0.0, 0.0], "color": "#98cada", "type":
+#!MFIX-GUI   "XZ-plane"}, "BC_2": {"to": [0.1, 0.0, 0.0], "from": [0.01, 0.0,
+#!MFIX-GUI   0.0], "color": "#c86585", "type": "XZ-plane"}, "BC_3": {"to": [0.1,
+#!MFIX-GUI   0.6, 0.0], "from": [0.0, 0.6, 0.0], "color": "#88b566", "type":
+#!MFIX-GUI   "XZ-plane"}, "BC_4": {"to": [0.1, 0.6, 0.0], "from": [0.1, 0.0,
+#!MFIX-GUI   0.0], "color": "#72b3bc", "type": "YZ-plane"}}}
+#!MFIX-GUI bc_regions = [[[1], ["BC_1"]], [[2], ["BC_2"]], [[3], ["BC_3"]],
+#!MFIX-GUI   [[4], ["BC_4"]]]
+#!MFIX-GUI ic_regions = [[[1], ["IC_1"]], [[2], ["IC_2"]]]
+#!MFIX-GUI is_regions = []
+#!MFIX-GUI ps_regions = []
+#!MFIX-GUI vtk_regions = []
+#!MFIX-GUI monitor_regions = []
+#!MFIX-GUI graphics = {"order": [], "data": {}}
+#!MFIX-GUI parameters = {"order": ["min", "max", "xmin", "xmax", "ymin", "ymax",
+#!MFIX-GUI   "zmin", "zmax", "km", "m", "cm", "mm", "um", "mile", "yard", "ft",
+#!MFIX-GUI   "ins"], "parameters": {"min": 0.0, "max": 0.0, "xmin": 0, "xmax":
+#!MFIX-GUI   0.1, "ymin": 0, "ymax": 0.6, "zmin": 0.0, "zmax": 0.0, "km":
+#!MFIX-GUI   1000.0, "m": 1.0, "cm": 0.01, "mm": 0.001, "um": 1e-06, "mile":
+#!MFIX-GUI   1609.34, "yard": 0.9144, "ft": 0.3048, "ins": 0.0254}}
+
+THERMO DATA
+Coal Ash                User Defined      0.S   200.000  6000.000  B  56.00000 1
+ 8.70769880E+00 8.45407650E-03 0.00000000E+00 0.00000000E+00 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 8.70769880E+00 8.45407650E-03 0.00000000E+00    3
+ 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+CO                      User Defined      0.G   200.000  6000.000  B  28.01040 1
+ 3.04848590E+00 1.35172810E-03-4.85794050E-07 7.88536440E-11-4.69807460E-15    2
+-1.42661170E+04 6.01709770E+00 3.57953350E+00-6.10353690E-04 1.01681430E-06    3
+ 9.07005860E-10-9.04424490E-13-1.43440860E+04 3.50840930E+00-1.32936280E+04    4
+
+CO2                     User Defined      0.G   200.000  6000.000  B  44.00980 1
+ 4.63651110E+00 2.74145690E-03-9.95897590E-07 1.60386660E-10-9.16198570E-15    2
+-4.90249040E+04-1.93489550E+00 2.35681300E+00 8.98412990E-03-7.12206320E-06    3
+ 2.45730080E-09-1.42885480E-13-4.83719710E+04 9.90090350E+00-4.73281050E+04    4
+
+Fixed Carbon            User Defined      0.S   200.000  6000.000  B  12.01100 1
+-7.94079328E-01 8.09779756E-03-6.56398654E-06 1.84781958E-09 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00-7.94079328E-01 8.09779756E-03-6.56398654E-06    3
+ 1.84781958E-09 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+N2                      User Defined      0.G   200.000  6000.000  B  28.01340 1
+ 2.95257637E+00 1.39690040E-03-4.92631603E-07 7.86010195E-11-4.60755204E-15    2
+-9.23948688E+02 5.87188762E+00 3.53100528E+00-1.23660988E-04-5.02999433E-07    3
+ 2.43530612E-09-1.40881235E-12-1.04697628E+03 2.96747038E+00 0.00000000E+00    4
+
+O2                      User Defined      0.G   200.000  6000.000  B  31.99880 1
+ 3.66096065E+00 6.56365811E-04-1.41149627E-07 2.05797935E-11-1.29913436E-15    2
+-1.21597718E+03 3.41536279E+00 3.78245636E+00-2.99673416E-03 9.84730201E-06    3
+-9.68129509E-09 3.24372837E-12-1.06394356E+03 3.65767573E+00 0.00000000E+00    4
+
+Soot                    User Defined      0.G   200.000  6000.000  B  12.01100 1
+-7.94079328E-01 8.09779756E-03-6.56398654E-06 1.84781958E-09 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00-7.94079328E-01 8.09779756E-03-6.56398654E-06    3
+ 1.84781958E-09 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+

@@ -1,0 +1,1062 @@
+### Run Controls
+  description     = 'PSDF'
+  run_name        = 'test'
+  units           = 'CGS'
+  run_type        = 'new'
+  time            = 0.0
+  tstop           = 50.0
+  dt              = 1.0000e-04
+  dt_max          = 1.0000e-04
+  dt_min          = 1.0000e-08
+  res_dt          = 0.05
+  drag_type       = 'GIDASPOW'
+  energy_eq       = .True.
+  nodesi          = 2
+  nodesj          = 40
+  nodesk          = 2
+  write_dashboard = .True.
+  full_log        = .True.
+
+### Physical parameters
+  gravity_x = 0.0
+  gravity_y = -980.665
+  gravity_z = 0.0
+
+### Cartesian grid
+  cartesian_grid       = .False.
+
+### Numeric
+  max_inlet_vel_fac = 100000.0
+  norm_g            = 0.0
+  tol_resid         = 5.0000e-03
+  ### Discretization
+  def_cor    = .True.
+  norm_s     = 0.0
+
+### Geometry
+  coordinates = 'CARTESIAN'
+  imax        = 25
+  jmax        = 400
+  kmax        = 25
+  x_max       = 50.0
+  x_min       = 0
+  y_max       = 800.0
+  y_min       = 0
+  z_max       = 50.0
+  z_min       = 0
+
+#### Fluid
+  species_eq(0) = .True.
+  nmax_g        = 17
+  # Fluid species 1: O2
+    species_g(1)       = 'O2'
+    species_alias_g(1) = 'O2'
+  # Fluid species 2: CO
+    species_g(2)       = 'CO'
+    species_alias_g(2) = 'CO'
+  # Fluid species 3: CO2
+    species_g(3)       = 'CO2'
+    species_alias_g(3) = 'CO2'
+  # Fluid species 4: CH4
+    species_g(4)       = 'CH4'
+    species_alias_g(4) = 'CH4'
+  # Fluid species 5: H2
+    species_g(5)       = 'H2'
+    species_alias_g(5) = 'H2'
+  # Fluid species 6: H2O
+    species_g(6)       = 'H2O'
+    species_alias_g(6) = 'H2O'
+  # Fluid species 7: N2
+    species_g(7)       = 'N2'
+    species_alias_g(7) = 'N2'
+  # Fluid species 8: Tar
+    species_g(8)       = 'Tar'
+    species_alias_g(8) = 'Tar'
+  # Fluid species 9: Soot
+    species_g(9)       = 'Soot'
+    species_alias_g(9) = 'Soot'
+  # Fluid species 10: PAH
+    species_g(10)       = 'PAH'
+    species_alias_g(10) = 'PAH'
+  # Fluid species 11: OIL
+    species_g(11)       = 'OIL'
+    species_alias_g(11) = 'OIL'
+  # Fluid species 12: H2S
+    species_g(12)       = 'H2S'
+    species_alias_g(12) = 'H2S'
+  # Fluid species 13: C3H6
+    species_g(13)       = 'C3H6'
+    species_alias_g(13) = 'C3H6'
+  # Fluid species 14: HCN
+    species_g(14)       = 'HCN'
+    species_alias_g(14) = 'HCN'
+  # Fluid species 15: C2H4
+    species_g(15)       = 'C2H4'
+    species_alias_g(15) = 'C2H4'
+  # Fluid species 16: C2H6
+    species_g(16)       = 'C2H6'
+    species_alias_g(16) = 'C2H6'
+  # Fluid species 17: SO3
+    species_g(17)       = 'SO3'
+    species_alias_g(17) = 'SO3'
+
+#### Solids
+  mmax = 2
+  # Solid 1
+    solids_model(1) = 'TFM'
+    d_p0(1)         = 0.0203
+    ro_s0(1)        = 1.570
+    species_eq(1)   = .True.
+    nmax_s(1)       = 4
+    # Solid 1 species 1: Char
+      species_s(1,1)       = 'Char'
+      species_alias_s(1,1) = 'Char'
+    # Solid 1 species 2: Volatiles
+      species_s(1,2)       = 'Volatiles'
+      species_alias_s(1,2) = 'Volatiles'
+    # Solid 1 species 3: Moisture
+      species_s(1,3)       = 'Moisture'
+      species_alias_s(1,3) = 'Moisture'
+    # Solid 1 species 4: Ash
+      species_s(1,4)       = 'Ash'
+      species_alias_s(1,4) = 'Ash'
+
+  # Solid 2
+    solids_model(2) = 'TFM'
+    d_p0(2)         = 8.7000e-03
+    ro_s0(2)        = 2.730
+    species_eq(2)   = .True.
+    nmax_s(2)       = 2
+    # Solid 2 species 1: Ash_2
+      species_s(2,1)       = 'Ash_2'
+      species_alias_s(2,1) = 'Ash_2'
+    # Solid 2 species 2: Char_2
+      species_s(2,2)       = 'Char_2'
+      species_alias_s(2,2) = 'Char_2'
+
+
+### Initial conditions
+  # Initial condition 1: IC_1
+    ic_x_e(1)               = 50.0 #!MFIX-GUI eq{float(xmax)}
+    ic_x_w(1)               = 0.0
+    ic_y_s(1)               = 0.0
+    ic_y_n(1)               = 800.0
+    ic_z_b(1)               = 0.0
+    ic_z_t(1)               = 50.0 #!MFIX-GUI eq{float(zmax)}
+    ic_des_fit_to_region(1) = .False.
+    ic_ep_g(1)              = 0.95
+    ic_t_g(1)               = 1200
+    ic_u_g(1)               = 0.0
+    ic_v_g(1)               = 0.0
+    ic_w_g(1)               = 0.0
+    ic_gama_rg(1)           = 0.0
+    ic_p_star(1)            = 0.0
+    ic_t_rg(1)              = 293.15
+    ic_x_g(1,1)             = 0.0 !O2
+    ic_x_g(1,2)             = 0.0 !CO
+    ic_x_g(1,3)             = 0.0 !CO2
+    ic_x_g(1,4)             = 0.0 !CH4
+    ic_x_g(1,5)             = 0.0 !H2
+    ic_x_g(1,6)             = 0.0 !H2O
+    ic_x_g(1,7)             = 1.0 !N2
+    ic_x_g(1,8)             = 0.0 !Tar
+    ic_x_g(1,9)             = 0.0 !Soot
+    ic_x_g(1,10)            = 0.0 !PAH
+    ic_x_g(1,11)            = 0.0 !OIL
+    ic_x_g(1,12)            = 0.0 !H2S
+    ic_x_g(1,13)            = 0.0 !C3H6
+    ic_x_g(1,14)            = 0.0 !HCN
+    ic_x_g(1,15)            = 0.0 !C2H4
+    ic_x_g(1,16)            = 0.0 !C2H6
+    ic_x_g(1,17)            = 0.0 !SO3
+    ic_ep_s(1,1)            = 0.0
+    ic_t_s(1,1)             = 1100
+    ic_u_s(1,1)             = 0.0
+    ic_v_s(1,1)             = 0.0
+    ic_w_s(1,1)             = 0.0
+    ic_gama_rs(1,1)         = 0.0
+    ic_t_rs(1,1)            = 293.15
+    ic_x_s(1,1,1)           = 0.0 !Char
+    ic_x_s(1,1,2)           = 0.0 !Volatiles
+    ic_x_s(1,1,3)           = 0.0 !Moisture
+    ic_x_s(1,1,4)           = 1.0 !Ash
+    ic_ep_s(1,2)            = 0.05 #!MFIX-GUI eq{float(((0.05*2.730)*1000.0)/2730.0)}
+    ic_t_s(1,2)             = 1200
+    ic_u_s(1,2)             = 0.0
+    ic_v_s(1,2)             = 0.0
+    ic_w_s(1,2)             = 0.0
+    ic_gama_rs(1,2)         = 0.0
+    ic_t_rs(1,2)            = 293.15
+    ic_x_s(1,2,1)           = 0.985 !Ash_2
+    ic_x_s(1,2,2)           = 0.015 !Char_2
+
+
+# Boundary conditions
+  # Boundary condition 1: BC_1
+    bc_type(1)       = 'MI'
+    bc_x_e(1)        = 50.0 #!MFIX-GUI eq{float(xmax)}
+    bc_x_w(1)        = 0.0
+    bc_y_s(1)        = 0.0
+    bc_y_n(1)        = 0.0
+    bc_z_b(1)        = 0.0
+    bc_z_t(1)        = 50.0 #!MFIX-GUI eq{float(zmax)}
+    bc_ep_g(1)       = 1.0
+    bc_p_g(1)        = 2342250.0
+    bc_t_g(1)        = 482
+    bc_u_g(1)        = 0.0
+    bc_w_g(1)        = 0.0
+    bc_massflow_g(1) = 342
+    bc_x_g(1,1)      = 0.173 !O2
+    bc_x_g(1,2)      = 0 !CO
+    bc_x_g(1,3)      = 0 !CO2
+    bc_x_g(1,4)      = 0 !CH4
+    bc_x_g(1,5)      = 0 !H2
+    bc_x_g(1,6)      = 0.213 !H2O
+    bc_x_g(1,7)      = 0.614 !N2
+    bc_x_g(1,8)      = 0 !Tar
+    bc_x_g(1,9)      = 0 !Soot
+    bc_x_g(1,10)     = 0 !PAH
+    bc_x_g(1,11)     = 0 !OIL
+    bc_x_g(1,12)     = 0 !H2S
+    bc_x_g(1,13)     = 0 !C3H6
+    bc_x_g(1,14)     = 0 !HCN
+    bc_x_g(1,15)     = 0 !C2H4
+    bc_x_g(1,16)     = 0 !C2H6
+    bc_x_g(1,17)     = 0 !SO3
+    # Solid 1
+      bc_ep_s(1,1)  = 0.0
+      bc_t_s(1,1)   = 482
+      bc_u_s(1,1)   = 0.0
+      bc_v_s(1,1)   = 0.0
+      bc_w_s(1,1)   = 0.0
+      bc_x_s(1,1,1) = 0.0 !Char
+      bc_x_s(1,1,2) = 0.0 !Volatiles
+      bc_x_s(1,1,3) = 0.0 !Moisture
+      bc_x_s(1,1,4) = 1.0 !Ash
+    # Solid 2
+      bc_ep_s(1,2)  = 0.0
+      bc_t_s(1,2)   = 482
+      bc_u_s(1,2)   = 0.0
+      bc_v_s(1,2)   = 0.0
+      bc_w_s(1,2)   = 0.0
+      bc_x_s(1,2,1) = 1.0 !Ash_2
+      bc_x_s(1,2,2) = 0.0 !Char_2
+
+  # Boundary condition 2: BC_2
+    bc_type(2) = 'PO'
+    bc_x_e(2)  = 50.0 #!MFIX-GUI eq{float(xmax)}
+    bc_x_w(2)  = 50.0 #!MFIX-GUI eq{float(xmax)}
+    bc_y_s(2)  = 750.0
+    bc_y_n(2)  = 800.0
+    bc_z_b(2)  = 10.0
+    bc_z_t(2)  = 40.0
+    bc_p_g(2)  = 1556836.0
+    bc_t_g(2)  = 1227
+    # Solid 1
+      bc_t_s(2,1) = 1227
+    # Solid 2
+      bc_t_s(2,2) = 1227
+
+  # Boundary condition 3: BC_3
+    bc_type(3)       = 'MI'
+    bc_x_e(3)        = 50.0 #!MFIX-GUI eq{float(xmax)}
+    bc_x_w(3)        = 50.0 #!MFIX-GUI eq{float(xmax)}
+    bc_y_s(3)        = 39.0
+    bc_y_n(3)        = 44.0
+    bc_z_b(3)        = 10.0
+    bc_z_t(3)        = 40.0 #!MFIX-GUI eq{float(zmax)}
+    bc_ep_g(3)       = 0.5
+    bc_p_g(3)        = 2342250.0
+    bc_t_g(3)        = 1190
+    bc_v_g(3)        = 0.0
+    bc_w_g(3)        = 0.0
+    bc_massflow_g(3) = 293.5
+    bc_x_g(3,1)      = 0 !O2
+    bc_x_g(3,2)      = 0.0367 !CO
+    bc_x_g(3,3)      = 0.0568 !CO2
+    bc_x_g(3,4)      = 0.003 !CH4
+    bc_x_g(3,5)      = 0.0019 !H2
+    bc_x_g(3,6)      = 0.0205 !H2O
+    bc_x_g(3,7)      = 0.8811 !N2
+    bc_x_g(3,8)      = 0 !Tar
+    bc_x_g(3,9)      = 0 !Soot
+    bc_x_g(3,10)     = 0 !PAH
+    bc_x_g(3,11)     = 0 !OIL
+    bc_x_g(3,12)     = 0 !H2S
+    bc_x_g(3,13)     = 0 !C3H6
+    bc_x_g(3,14)     = 0 !HCN
+    bc_x_g(3,15)     = 0 !C2H4
+    bc_x_g(3,16)     = 0 !C2H6
+    bc_x_g(3,17)     = 0 !SO3
+    # Solid 1
+      bc_ep_s(3,1)  = 0.0
+      bc_t_s(3,1)   = 293.15
+      bc_u_s(3,1)   = 0.0
+      bc_v_s(3,1)   = 0.0
+      bc_w_s(3,1)   = 0.0
+      bc_x_s(3,1,1) = 0.0 !Char
+      bc_x_s(3,1,2) = 0.0 !Volatiles
+      bc_x_s(3,1,3) = 0.0 !Moisture
+      bc_x_s(3,1,4) = 1.0 !Ash
+    # Solid 2
+      bc_ep_s(3,2)       = 0.5 #!MFIX-GUI eq{float(((0.5*2.730)*1000.0)/2730.0)}
+      bc_t_s(3,2)        = 1190
+      bc_v_s(3,2)        = 0.0
+      bc_w_s(3,2)        = 0.0
+      bc_massflow_s(3,2) = 3746
+      bc_x_s(3,2,1)      = 0.979 !Ash_2
+      bc_x_s(3,2,2)      = 0.021 !Char_2
+
+  # Boundary condition 4: BC_4
+    bc_type(4)       = 'MI'
+    bc_x_e(4)        = 50.0
+    bc_x_w(4)        = 50.0
+    bc_y_s(4)        = 30.0
+    bc_y_n(4)        = 40.0
+    bc_z_b(4)        = 10.0
+    bc_z_t(4)        = 40.0
+    bc_ep_g(4)       = 1
+    bc_p_g(4)        = 2342250.0
+    bc_t_g(4)        = 300
+    bc_v_g(4)        = 0.0
+    bc_w_g(4)        = 0.0
+    bc_massflow_g(4) = 35.0
+    bc_x_g(4,1)      = 0 !O2
+    bc_x_g(4,2)      = 0 !CO
+    bc_x_g(4,3)      = 0 !CO2
+    bc_x_g(4,4)      = 0 !CH4
+    bc_x_g(4,5)      = 0 !H2
+    bc_x_g(4,6)      = 0 !H2O
+    bc_x_g(4,7)      = 1.0 !N2
+    bc_x_g(4,8)      = 0 !Tar
+    bc_x_g(4,9)      = 0 !Soot
+    bc_x_g(4,10)     = 0 !PAH
+    bc_x_g(4,11)     = 0 !OIL
+    bc_x_g(4,12)     = 0 !H2S
+    bc_x_g(4,13)     = 0 !C3H6
+    bc_x_g(4,14)     = 0 !HCN
+    bc_x_g(4,15)     = 0 !C2H4
+    bc_x_g(4,16)     = 0 !C2H6
+    bc_x_g(4,17)     = 0 !SO3
+    # Solid 1
+      bc_ep_s(4,1)  = 0.0
+      bc_t_s(4,1)   = 300
+      bc_u_s(4,1)   = 0.0
+      bc_v_s(4,1)   = 0.0
+      bc_w_s(4,1)   = 0.0
+      bc_x_s(4,1,1) = 0.0 !Char
+      bc_x_s(4,1,2) = 0.0 !Volatiles
+      bc_x_s(4,1,3) = 0.0 !Moisture
+      bc_x_s(4,1,4) = 1.0 !Ash
+    # Solid 2
+      bc_ep_s(4,2)  = 0.0
+      bc_t_s(4,2)   = 300
+      bc_u_s(4,2)   = 0.0
+      bc_v_s(4,2)   = 0.0
+      bc_w_s(4,2)   = 0.0
+      bc_x_s(4,2,1) = 1.0 !Ash_2
+      bc_x_s(4,2,2) = 0.0 !Char_2
+
+  # Boundary condition 5: BC_5
+    bc_type(5)       = 'MI'
+    bc_x_e(5)        = 50.0 #!MFIX-GUI eq{float(xmax)}
+    bc_x_w(5)        = 50.0 #!MFIX-GUI eq{float(xmax)}
+    bc_y_s(5)        = 88
+    bc_y_n(5)        = 89.5
+    bc_z_b(5)        = 10.0
+    bc_z_t(5)        = 40.0 #!MFIX-GUI eq{float(zmax)}
+    bc_ep_g(5)       = 0.95
+    bc_p_g(5)        = 2342250.0
+    bc_t_g(5)        = 300
+    bc_v_g(5)        = 0.0
+    bc_w_g(5)        = 0.0
+    bc_massflow_g(5) = 181.57
+    bc_x_g(5,1)      = 0 !O2
+    bc_x_g(5,2)      = 0 !CO
+    bc_x_g(5,3)      = 0 !CO2
+    bc_x_g(5,4)      = 0 !CH4
+    bc_x_g(5,5)      = 0 !H2
+    bc_x_g(5,6)      = 0 !H2O
+    bc_x_g(5,7)      = 1.0 !N2
+    bc_x_g(5,8)      = 0 !Tar
+    bc_x_g(5,9)      = 0 !Soot
+    bc_x_g(5,10)     = 0 !PAH
+    bc_x_g(5,11)     = 0 !OIL
+    bc_x_g(5,12)     = 0 !H2S
+    bc_x_g(5,13)     = 0 !C3H6
+    bc_x_g(5,14)     = 0 !HCN
+    bc_x_g(5,15)     = 0 !C2H4
+    bc_x_g(5,16)     = 0 !C2H6
+    bc_x_g(5,17)     = 0 !SO3
+    # Solid 1
+      bc_ep_s(5,1)       = 0.05 #!MFIX-GUI eq{float(((0.05*1.570)*1000.0)/1570.0)}
+      bc_t_s(5,1)        = 300
+      bc_v_s(5,1)        = 0.0
+      bc_w_s(5,1)        = 0.0
+      bc_massflow_s(5,1) = 352.2
+      bc_x_s(5,1,1)      = 0.2932 !Char
+      bc_x_s(5,1,2)      = 0.3828 !Volatiles
+      bc_x_s(5,1,3)      = 0.1778 !Moisture
+      bc_x_s(5,1,4)      = 0.1462 !Ash
+    # Solid 2
+      bc_ep_s(5,2)  = 0.0
+      bc_t_s(5,2)   = 300
+      bc_u_s(5,2)   = 0.0
+      bc_v_s(5,2)   = 0.0
+      bc_w_s(5,2)   = 0.0
+      bc_x_s(5,2,1) = 1.0 !Ash_2
+      bc_x_s(5,2,2) = 0.0 !Char_2
+
+    bc_type(6)      = 'NSW'
+    bc_x_e(6)       = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_x_w(6)       = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_y_s(6)       = 0.0 #!MFIX-GUI eq{float(ymin)}
+    bc_y_n(6)       = 800.0 #!MFIX-GUI eq{float(ymax)}
+    bc_z_b(6)       = 0.0   #!MFIX-GUI eq{float(zmin)}
+    bc_z_t(6)       = 50.0  #!MFIX-GUI eq{float(zmax)}
+    bc_c_t_g(6)     = 0.0
+    bc_hw_t_g(6)    = 0.0
+    bc_jj_ps(6)     = 0  
+    bc_uw_g(6)      = 0.0
+    bc_vw_g(6)      = 0.0
+    bc_ww_g(6)      = 0.0
+    bc_c_x_g(6,1)   = 0 !O2
+    bc_hw_x_g(6,1)  = 0.0 !O2
+    bc_c_x_g(6,2)   = 0 !CO
+    bc_hw_x_g(6,2)  = 0.0 !CO
+    bc_c_x_g(6,3)   = 0 !CO2 
+    bc_hw_x_g(6,3)  = 0.0 !CO2 
+    bc_c_x_g(6,4)   = 0 !CH4 
+    bc_hw_x_g(6,4)  = 0.0 !CH4 
+    bc_c_x_g(6,5)   = 0 !H2
+    bc_hw_x_g(6,5)  = 0.0 !H2
+    bc_c_x_g(6,6)   = 0 !H2O 
+    bc_hw_x_g(6,6)  = 0.0 !H2O 
+    bc_c_x_g(6,7)   = 0 !N2
+    bc_hw_x_g(6,7)  = 0.0 !N2
+    bc_c_x_g(6,8)   = 0 !Tar 
+    bc_hw_x_g(6,8)  = 0.0 !Tar 
+    bc_c_x_g(6,9)   = 0 !Soot
+    bc_hw_x_g(6,9)  = 0.0 !Soot
+    bc_c_x_g(6,10)  = 0 !PAH 
+    bc_hw_x_g(6,10) = 0.0 !PAH 
+    bc_c_x_g(6,11)  = 0 !OIL 
+    bc_hw_x_g(6,11) = 0.0 !OIL 
+    bc_c_x_g(6,12)  = 0 !H2S 
+    bc_hw_x_g(6,12) = 0.0 !H2S 
+    bc_c_x_g(6,13)  = 0 !C3H6
+    bc_hw_x_g(6,13) = 0.0 !C3H6
+    bc_c_x_g(6,14)  = 0 !HCN 
+    bc_hw_x_g(6,14) = 0.0 !HCN 
+    bc_c_x_g(6,15)  = 0 !C2H4
+    bc_hw_x_g(6,15) = 0.0 !C2H4
+    bc_c_x_g(6,16)  = 0 !C2H6
+    bc_hw_x_g(6,16) = 0.0 !C2H6
+    bc_c_x_g(6,17)  = 0 !SO3 
+    bc_hw_x_g(6,17) = 0.0 !SO3 
+# solid 1 
+     bc_c_t_s(6,1)    = 0.0
+     bc_hw_t_s(6,1)   = 0.0
+     bc_uw_s(6,1)     = 0.0
+     bc_vw_s(6,1)     = 0.0
+     bc_ww_s(6,1)     = 0.0
+     bc_c_x_s(6,1,1)  = 0.0 !Char
+     bc_hw_x_s(6,1,1) = 0.0 !Char
+     bc_c_x_s(6,1,2)  = 0.0 !Volatiles
+     bc_hw_x_s(6,1,2) = 0.0 !Volatiles
+     bc_c_x_s(6,1,3)  = 0.0 !Moisture
+     bc_hw_x_s(6,1,3) = 0.0 !Moisture
+     bc_c_x_s(6,1,4)  = 0.0 !Ash
+     bc_hw_x_s(6,1,4) = 0.0 !Ash
+# solid 2 
+    bc_c_t_s(6,2)    = 0.0
+    bc_hw_t_s(6,2)   = 0.0
+    bc_uw_s(6,2)     = 0.0
+    bc_vw_s(6,2)     = 0.0
+    bc_ww_s(6,2)     = 0.0
+    bc_c_x_s(6,2,1)  = 0.0 !Ash_2
+    bc_hw_x_s(6,2,1) = 0.0 !Ash_2
+    bc_c_x_s(6,2,2)  = 0.0 !Char_2
+    bc_hw_x_s(6,2,2) = 0.0 !Char_2
+
+    bc_type(7)      = 'NSW'
+    bc_x_e(7)       = 50.0 #!MFIX-GUI eq{float(xmin)}
+    bc_x_w(7)       = 50.0 #!MFIX-GUI eq{float(xmin)}
+    bc_y_s(7)       = 0.0 #!MFIX-GUI eq{float(ymin)}
+    bc_y_n(7)       = 800.0 #!MFIX-GUI eq{float(ymax)}
+    bc_z_b(7)       = 0.0 #!MFIX-GUI eq{float(zmin)}
+    bc_z_t(7)       = 50.0 #!MFIX-GUI eq{float(zmax)}
+    bc_c_t_g(7)     = 0.0
+    bc_hw_t_g(7)    = 0.0
+    bc_jj_ps(7)     = 0
+    bc_uw_g(7)      = 0.0
+    bc_vw_g(7)      = 0.0
+    bc_ww_g(7)      = 0.0
+    bc_c_x_g(7,1)   = 0 !O2
+    bc_hw_x_g(7,1)  = 0.0 !O2
+    bc_c_x_g(7,2)   = 0 !CO
+    bc_hw_x_g(7,2)  = 0.0 !CO
+    bc_c_x_g(7,3)   = 0 !CO2
+    bc_hw_x_g(7,3)  = 0.0 !CO2
+    bc_c_x_g(7,4)   = 0 !CH4
+    bc_hw_x_g(7,4)  = 0.0 !CH4
+    bc_c_x_g(7,5)   = 0 !H2
+    bc_hw_x_g(7,5)  = 0.0 !H2
+    bc_c_x_g(7,6)   = 0 !H2O
+    bc_hw_x_g(7,6)  = 0.0 !H2O
+    bc_c_x_g(7,7)   = 0 !N2
+    bc_hw_x_g(7,7)  = 0.0 !N2
+    bc_c_x_g(7,8)   = 0 !Tar
+    bc_hw_x_g(7,8)  = 0.0 !Tar
+    bc_c_x_g(7,9)   = 0 !Soot
+    bc_hw_x_g(7,9)  = 0.0 !Soot
+    bc_c_x_g(7,10)  = 0 !PAH
+    bc_hw_x_g(7,10) = 0.0 !PAH
+    bc_c_x_g(7,11)  = 0 !OIL
+    bc_hw_x_g(7,11) = 0.0 !OIL
+    bc_c_x_g(7,12)  = 0 !H2S
+    bc_hw_x_g(7,12) = 0.0 !H2S
+    bc_c_x_g(7,13)  = 0 !C3H6
+    bc_hw_x_g(7,13) = 0.0 !C3H6
+    bc_c_x_g(7,14)  = 0 !HCN
+    bc_hw_x_g(7,14) = 0.0 !HCN
+    bc_c_x_g(7,15)  = 0 !C2H4
+    bc_hw_x_g(7,15) = 0.0 !C2H4
+    bc_c_x_g(7,16)  = 0 !C2H6
+    bc_hw_x_g(7,16) = 0.0 !C2H6
+    bc_c_x_g(7,17)  = 0 !SO3
+    bc_hw_x_g(7,17) = 0.0 !SO3
+
+    bc_c_t_s(7,1)    = 0.0
+    bc_hw_t_s(7,1)   = 0.0
+    bc_uw_s(7,1)     = 0.0
+    bc_vw_s(7,1)     = 0.0
+    bc_ww_s(7,1)     = 0.0
+    bc_c_x_s(7,1,1)  = 0.0 !Char
+    bc_hw_x_s(7,1,1) = 0.0 !Char
+    bc_c_x_s(7,1,2)  = 0.0 !Volatiles
+    bc_hw_x_s(7,1,2) = 0.0 !Volatiles
+    bc_c_x_s(7,1,3)  = 0.0 !Moisture
+    bc_hw_x_s(7,1,3) = 0.0 !Moisture
+    bc_c_x_s(7,1,4)  = 0.0 !Ash
+    bc_hw_x_s(7,1,4) = 0.0 !Ash
+
+    bc_c_t_s(7,2)    = 0.0
+    bc_hw_t_s(7,2)   = 0.0
+    bc_uw_s(7,2)     = 0.0
+    bc_vw_s(7,2)     = 0.0
+    bc_ww_s(7,2)     = 0.0
+    bc_c_x_s(7,2,1)  = 0.0 !Ash_2
+    bc_hw_x_s(7,2,1) = 0.0 !Ash_2
+    bc_c_x_s(7,2,2)  = 0.0 !Char_2
+    bc_hw_x_s(7,2,2) = 0.0 !Char_2
+
+    bc_type(8)      = 'NSW'
+    bc_x_e(8)       = 50.0 #!MFIX-GUI eq{float(xmin)}
+    bc_x_w(8)       = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_y_s(8)       = 800.0 #!MFIX-GUI eq{float(ymin)}
+    bc_y_n(8)       = 800.0 #!MFIX-GUI eq{float(ymax)}
+    bc_z_b(8)       = 0.0 #!MFIX-GUI eq{float(zmin)}
+    bc_z_t(8)       = 50.0 #!MFIX-GUI eq{float(zmax)}
+    bc_c_t_g(8)     = 0.0
+    bc_hw_t_g(8)    = 0.0
+    bc_jj_ps(8)     = 0
+    bc_uw_g(8)      = 0.0
+    bc_vw_g(8)      = 0.0
+    bc_ww_g(8)      = 0.0
+    bc_c_x_g(8,1)   = 0 !O2
+    bc_hw_x_g(8,1)  = 0.0 !O2
+    bc_c_x_g(8,2)   = 0 !CO
+    bc_hw_x_g(8,2)  = 0.0 !CO
+    bc_c_x_g(8,3)   = 0 !CO2
+    bc_hw_x_g(8,3)  = 0.0 !CO2
+    bc_c_x_g(8,4)   = 0 !CH4
+    bc_hw_x_g(8,4)  = 0.0 !CH4
+    bc_c_x_g(8,5)   = 0 !H2
+    bc_hw_x_g(8,5)  = 0.0 !H2
+    bc_c_x_g(8,6)   = 0 !H2O
+    bc_hw_x_g(8,6)  = 0.0 !H2O
+    bc_c_x_g(8,7)   = 0 !N2
+    bc_hw_x_g(8,7)  = 0.0 !N2
+    bc_c_x_g(8,8)   = 0 !Tar
+    bc_hw_x_g(8,8)  = 0.0 !Tar
+    bc_c_x_g(8,9)   = 0 !Soot
+    bc_hw_x_g(8,9)  = 0.0 !Soot
+    bc_c_x_g(8,10)  = 0 !PAH
+    bc_hw_x_g(8,10) = 0.0 !PAH
+    bc_c_x_g(8,11)  = 0 !OIL
+    bc_hw_x_g(8,11) = 0.0 !OIL
+    bc_c_x_g(8,12)  = 0 !H2S
+    bc_hw_x_g(8,12) = 0.0 !H2S
+    bc_c_x_g(8,13)  = 0 !C3H6
+    bc_hw_x_g(8,13) = 0.0 !C3H6
+    bc_c_x_g(8,14)  = 0 !HCN
+    bc_hw_x_g(8,14) = 0.0 !HCN
+    bc_c_x_g(8,15)  = 0 !C2H4
+    bc_hw_x_g(8,15) = 0.0 !C2H4
+    bc_c_x_g(8,16)  = 0 !C2H6
+    bc_hw_x_g(8,16) = 0.0 !C2H6
+    bc_c_x_g(8,17)  = 0 !SO3
+    bc_hw_x_g(8,17) = 0.0 !SO3
+
+      bc_c_t_s(8,1)    = 0.0
+      bc_hw_t_s(8,1)   = 0.0
+      bc_uw_s(8,1)     = 0.0
+      bc_vw_s(8,1)     = 0.0
+      bc_ww_s(8,1)     = 0.0
+      bc_c_x_s(8,1,1)  = 0.0 !Char
+      bc_hw_x_s(8,1,1) = 0.0 !Char
+      bc_c_x_s(8,1,2)  = 0.0 !Volatiles
+      bc_hw_x_s(8,1,2) = 0.0 !Volatiles
+      bc_c_x_s(8,1,3)  = 0.0 !Moisture
+      bc_hw_x_s(8,1,3) = 0.0 !Moisture
+      bc_c_x_s(8,1,4)  = 0.0 !Ash
+      bc_hw_x_s(8,1,4) = 0.0 !Ash
+
+      bc_c_t_s(8,2)    = 0.0
+      bc_hw_t_s(8,2)   = 0.0
+      bc_uw_s(8,2)     = 0.0
+      bc_vw_s(8,2)     = 0.0
+      bc_ww_s(8,2)     = 0.0
+      bc_c_x_s(8,2,1)  = 0.0 !Ash_2
+      bc_hw_x_s(8,2,1) = 0.0 !Ash_2
+      bc_c_x_s(8,2,2)  = 0.0 !Char_2
+      bc_hw_x_s(8,2,2) = 0.0 !Char_2
+
+
+    bc_type(9)      = 'NSW'
+    bc_x_e(9)       = 50.0 #!MFIX-GUI eq{float(xmin)}
+    bc_x_w(9)       = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_y_s(9)       = 0.0 #!MFIX-GUI eq{float(ymin)}
+    bc_y_n(9)       = 800.0 #!MFIX-GUI eq{float(ymax)}
+    bc_z_b(9)       = 0.0 #!MFIX-GUI eq{float(zmin)}
+    bc_z_t(9)       = 0.0 #!MFIX-GUI eq{float(zmax)}
+    bc_c_t_g(9)     = 0.0
+    bc_hw_t_g(9)    = 0.0
+    bc_jj_ps(9)     = 0
+    bc_uw_g(9)      = 0.0
+    bc_vw_g(9)      = 0.0
+    bc_ww_g(9)      = 0.0
+    bc_c_x_g(9,1)   = 0 !O2
+    bc_hw_x_g(9,1)  = 0.0 !O2
+    bc_c_x_g(9,2)   = 0 !CO
+    bc_hw_x_g(9,2)  = 0.0 !CO
+    bc_c_x_g(9,3)   = 0 !CO2
+    bc_hw_x_g(9,3)  = 0.0 !CO2
+    bc_c_x_g(9,4)   = 0 !CH4
+    bc_hw_x_g(9,4)  = 0.0 !CH4
+    bc_c_x_g(9,5)   = 0 !H2
+    bc_hw_x_g(9,5)  = 0.0 !H2
+    bc_c_x_g(9,6)   = 0 !H2O
+    bc_hw_x_g(9,6)  = 0.0 !H2O
+    bc_c_x_g(9,7)   = 0 !N2
+    bc_hw_x_g(9,7)  = 0.0 !N2
+    bc_c_x_g(9,8)   = 0 !Tar
+    bc_hw_x_g(9,8)  = 0.0 !Tar
+    bc_c_x_g(9,9)   = 0 !Soot
+    bc_hw_x_g(9,9)  = 0.0 !Soot
+    bc_c_x_g(9,10)  = 0 !PAH
+    bc_hw_x_g(9,10) = 0.0 !PAH
+    bc_c_x_g(9,11)  = 0 !OIL
+    bc_hw_x_g(9,11) = 0.0 !OIL
+    bc_c_x_g(9,12)  = 0 !H2S
+    bc_hw_x_g(9,12) = 0.0 !H2S
+    bc_c_x_g(9,13)  = 0 !C3H6
+    bc_hw_x_g(9,13) = 0.0 !C3H6
+    bc_c_x_g(9,14)  = 0 !HCN
+    bc_hw_x_g(9,14) = 0.0 !HCN
+    bc_c_x_g(9,15)  = 0 !C2H4
+    bc_hw_x_g(9,15) = 0.0 !C2H4
+    bc_c_x_g(9,16)  = 0 !C2H6
+    bc_hw_x_g(9,16) = 0.0 !C2H6
+    bc_c_x_g(9,17)  = 0 !SO3
+    bc_hw_x_g(9,17) = 0.0 !SO3
+
+      bc_c_t_s(9,1)    = 0.0
+      bc_hw_t_s(9,1)   = 0.0
+      bc_uw_s(9,1)     = 0.0
+      bc_vw_s(9,1)     = 0.0
+      bc_ww_s(9,1)     = 0.0
+      bc_c_x_s(9,1,1)  = 0.0 !Char
+      bc_hw_x_s(9,1,1) = 0.0 !Char
+      bc_c_x_s(9,1,2)  = 0.0 !Volatiles
+      bc_hw_x_s(9,1,2) = 0.0 !Volatiles
+      bc_c_x_s(9,1,3)  = 0.0 !Moisture
+      bc_hw_x_s(9,1,3) = 0.0 !Moisture
+      bc_c_x_s(9,1,4)  = 0.0 !Ash
+      bc_hw_x_s(9,1,4) = 0.0 !Ash
+      bc_c_t_s(9,2)    = 0.0                                                                                                                                                        
+      bc_hw_t_s(9,2)   = 0.0
+      bc_uw_s(9,2)     = 0.0
+      bc_vw_s(9,2)     = 0.0
+      bc_ww_s(9,2)     = 0.0
+      bc_c_x_s(9,2,1)  = 0.0 !Ash_2
+      bc_hw_x_s(9,2,1) = 0.0 !Ash_2
+      bc_c_x_s(9,2,2)  = 0.0 !Char_2
+      bc_hw_x_s(9,2,2) = 0.0 !Char_2
+
+
+    bc_type(10)      = 'NSW'
+    bc_x_e(10)       = 50.0 #!MFIX-GUI eq{float(xmin)}
+    bc_x_w(10)       = 0.0 #!MFIX-GUI eq{float(xmin)}
+    bc_y_s(10)       = 0.0 #!MFIX-GUI eq{float(ymin)}
+    bc_y_n(10)       = 800.0 #!MFIX-GUI eq{float(ymax)}
+    bc_z_b(10)       = 50.0 #!MFIX-GUI eq{float(zmin)}
+    bc_z_t(10)       = 50.0 #!MFIX-GUI eq{float(zmax)}
+    bc_c_t_g(10)     = 0.0
+    bc_hw_t_g(10)    = 0.0
+    bc_jj_ps(10)     = 0
+    bc_uw_g(10)      = 0.0
+    bc_vw_g(10)      = 0.0
+    bc_ww_g(10)      = 0.0
+    bc_c_x_g(10,1)   = 0 !O2
+    bc_hw_x_g(10,1)  = 0.0 !O2
+    bc_c_x_g(10,2)   = 0 !CO
+    bc_hw_x_g(10,2)  = 0.0 !CO
+    bc_c_x_g(10,3)   = 0 !CO2
+    bc_hw_x_g(10,3)  = 0.0 !CO2
+    bc_c_x_g(10,4)   = 0 !CH4
+    bc_hw_x_g(10,4)  = 0.0 !CH4
+    bc_c_x_g(10,5)   = 0 !H2
+    bc_hw_x_g(10,5)  = 0.0 !H2
+    bc_c_x_g(10,6)   = 0 !H2O
+    bc_hw_x_g(10,6)  = 0.0 !H2O
+    bc_c_x_g(10,7)   = 0 !N2
+    bc_hw_x_g(10,7)  = 0.0 !N2
+    bc_c_x_g(10,8)   = 0 !Tar
+    bc_hw_x_g(10,8)  = 0.0 !Tar
+    bc_c_x_g(10,9)   = 0 !Soot
+    bc_hw_x_g(10,9)  = 0.0 !Soot
+    bc_c_x_g(10,10)  = 0 !PAH
+    bc_hw_x_g(10,10) = 0.0 !PAH
+    bc_c_x_g(10,11)  = 0 !OIL
+    bc_hw_x_g(10,11) = 0.0 !OIL
+    bc_c_x_g(10,12)  = 0 !H2S
+    bc_hw_x_g(10,12) = 0.0 !H2S
+    bc_c_x_g(10,13)  = 0 !C3H6
+    bc_hw_x_g(10,13) = 0.0 !C3H6
+    bc_c_x_g(10,14)  = 0 !HCN
+    bc_hw_x_g(10,14) = 0.0 !HCN
+    bc_c_x_g(10,15)  = 0 !C2H4
+    bc_hw_x_g(10,15) = 0.0 !C2H4
+    bc_c_x_g(10,16)  = 0 !C2H6
+    bc_hw_x_g(10,16) = 0.0 !C2H6
+    bc_c_x_g(10,17)  = 0 !SO3
+    bc_hw_x_g(10,17) = 0.0 !SO3
+
+      bc_c_t_s(10,1)    = 0.0
+      bc_hw_t_s(10,1)   = 0.0
+      bc_uw_s(10,1)     = 0.0
+      bc_vw_s(10,1)     = 0.0
+      bc_ww_s(10,1)     = 0.0
+      bc_c_x_s(10,1,1)  = 0.0 !Char
+      bc_hw_x_s(10,1,1) = 0.0 !Char
+      bc_c_x_s(10,1,2)  = 0.0 !Volatiles
+      bc_hw_x_s(10,1,2) = 0.0 !Volatiles
+      bc_c_x_s(10,1,3)  = 0.0 !Moisture
+      bc_hw_x_s(10,1,3) = 0.0 !Moisture
+      bc_c_x_s(10,1,4)  = 0.0 !Ash
+      bc_hw_x_s(10,1,4) = 0.0 !Ash
+      bc_c_t_s(10,2)    = 0.0
+      bc_hw_t_s(10,2)   = 0.0
+      bc_uw_s(10,2)     = 0.0
+      bc_vw_s(10,2)     = 0.0
+      bc_ww_s(10,2)     = 0.0
+      bc_c_x_s(10,2,1)  = 0.0 !Ash_2
+      bc_hw_x_s(10,2,1) = 0.0 !Ash_2
+      bc_c_x_s(10,2,2)  = 0.0 !Char_2
+      bc_hw_x_s(10,2,2) = 0.0 !Char_2
+
+
+
+# VTK outputs
+  write_vtk_files         = .True.
+  time_dependent_filename = .True.
+  # VTK output 2: IC_1
+    vtk_filebase(2) = 'IC_1_1'
+    vtk_x_e(2)      = 50.0 #!MFIX-GUI eq{float(xmax)}
+    vtk_x_w(2)      = 0.0
+    vtk_y_s(2)      = 0.0
+    vtk_y_n(2)      = 400
+    vtk_z_b(2)      = 0.0
+    vtk_z_t(2)      = 50.0 #!MFIX-GUI eq{float(zmax)}
+    vtk_data(2)     = 'C'
+    vtk_dt(2)       = 1.0
+    vtk_nxs(2)      = 0
+    vtk_nys(2)      = 0
+    vtk_nzs(2)      = 0
+    vtk_ep_g(2)     = .True.
+    vtk_p_g(2)      = .True.
+    vtk_p_star(2)   = .True.
+    vtk_t_g(2)      = .True.
+    vtk_u_g(2)      = .True.
+    vtk_v_g(2)      = .True.
+    vtk_vel_g(2)    = .True.
+    vtk_w_g(2)      = .True.
+    vtk_x_g(2,1)    = .True.
+    vtk_x_g(2,2)    = .True.
+    vtk_x_g(2,3)    = .True.
+    vtk_x_g(2,4)    = .True.
+    vtk_x_g(2,5)    = .True.
+    vtk_x_g(2,6)    = .True.
+    vtk_x_g(2,7)    = .True.
+    vtk_x_g(2,8)    = .True.
+    vtk_x_g(2,9)    = .True.
+    vtk_x_g(2,10)   = .True.
+    vtk_x_g(2,11)   = .True.
+    vtk_x_g(2,12)   = .True.
+    vtk_x_g(2,13)   = .True.
+    vtk_x_g(2,14)   = .True.
+    vtk_x_g(2,15)   = .True.
+    vtk_x_g(2,16)   = .True.
+    vtk_x_g(2,17)   = .True.
+    vtk_rop_s(2,1)  = .True.
+    vtk_t_s(2,1)    = .True.
+    vtk_u_s(2,1)    = .True.
+    vtk_v_s(2,1)    = .True.
+    vtk_vel_s(2,1)  = .True.
+    vtk_w_s(2,1)    = .True.
+    vtk_x_s(2,1,1)  = .True.
+    vtk_x_s(2,1,2)  = .True.
+    vtk_x_s(2,1,3)  = .True.
+    vtk_x_s(2,1,4)  = .True.
+    vtk_rop_s(2,2)  = .True.
+    vtk_t_s(2,2)    = .True.
+    vtk_u_s(2,2)    = .True.
+    vtk_v_s(2,2)    = .True.
+    vtk_vel_s(2,2)  = .True.
+    vtk_w_s(2,2)    = .True.
+    vtk_x_s(2,2,1)  = .True.
+    vtk_x_s(2,2,2)  = .True.
+
+
+# SPx outputs
+  spx_dt(1)  = 0.1
+  spx_dt(2)  = 0.1
+  spx_dt(3)  = 0.1
+  spx_dt(4)  = 0.1
+  spx_dt(5)  = 0.1
+  spx_dt(6)  = 0.1
+  spx_dt(7)  = 0.1
+  spx_dt(8)  = 0.1
+  spx_dt(9)  = 0.1
+  spx_dt(10) = 0.1
+  spx_dt(11) = 0.1
+
+### Two-fluid model
+  c_f     = 0.5
+  e_w     = 0.9
+  ep_star = 0.44
+  phi     = 30.0
+  phi_w   = 11.31
+
+### UDF control
+
+#*****************************************************
+# Undocumented keys                                  *
+#*****************************************************
+  e                    = 0.9    #!!!!
+  minimize_dotproducts = .True.    #!!!!
+
+#*****************************************************
+# Miscellaneous keys                                 *
+#*****************************************************
+  c(1)            = 3.0700e-01
+  c(2)            = 3.6910e-01
+  c(3)            = 1.7780e-01
+  c(4)            = 1.4610e-01
+  c_name(1)       = 'Char'
+  c_name(2)       = 'Volatiles'
+  c_name(3)       = 'Moisture'
+  c_name(4)       = 'Ash'
+  call_usr        = .True.
+  nlog            = 25
+  nrr             = 27
+  out_dt          = 0.2
+  stiff_chemistry = .True.
+  vtk_rrate(2,1)  = .True.
+  # Radiation stuff
+    RAD_ON = .T.
+    RAD_EMIS_W = 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0 1.0
+#    RAD_T_W = 300 300 800 800
+    RAD_NQUAD = 1
+    RAD_SKIP = 0
+    RAD_NRR = 10
+    RAD_RTE = 'P1'
+    RAD_SPECTRAL = 'GRAY'
+
+# Chemical reaction section
+@(RXNS)
+Drying {
+    chem_eq = "Moisture --> H2O"
+}
+Pyrolysis {
+    chem_eq = "Volatiles --> 0.220333*CO + 0.104874*CO2 + 0.18809*CH4 +" &
+        " 0.198121*H2 + 0.225707*H2O + 0.0160798*H2S + 0.0203017*C3H6"&
+        " + 0.0126322*HCN + 0.0395884*C2H4 + 0.0065204*C2H6 +"&
+        " 0.0205237*Tar"
+}
+TarCracking {
+    chem_eq = "none"
+}
+TarCombustion {
+    chem_eq = "Tar + 24.21*O2 --> 20.7741*CO2 + 10.7184*H2O + 0.108*SO3 +" &
+        " 0.1852*N2"
+}
+SteamGasification {
+    chem_eq = "Char + H2O --> CO + H2"
+}
+SteamGasification_2 {
+    chem_eq = "Char_2 + H2O --> CO + H2"
+}
+WaterGasShift_F {
+    chem_eq = "CO + H2O --> CO2 + H2"
+}
+WaterGasShift_R {
+    chem_eq = "CO2 + H2 --> CO + H2O"
+}
+CharCombustion {
+    chem_eq = "2*Char + O2 --> 2*CO"
+}
+CharCombustion_2 {
+    chem_eq = "2*Char_2 + O2 --> 2*CO"
+}
+CO2_Gasification {
+    chem_eq = "Char + CO2 --> 2*CO"
+}
+CO2_Gasification_2 {
+    chem_eq = "Char_2 + CO2 --> 2*CO"
+}
+Methanation {
+    chem_eq = "Char + 2*H2 --> CH4"
+}
+Methanation_2 {
+    chem_eq = "Char_2 + 2*H2 --> CH4"
+}
+CO_Combustion {
+    chem_eq = "2*CO + O2 --> 2*CO2"
+}
+CH4_Combustion {
+    chem_eq = "CH4 + 2*O2 --> CO2 + 2*H2O"
+}
+H2_Combustion {
+    chem_eq = "2*H2 + O2 --> 2*H2O"
+}
+@(END)
+
+THERMO DATA
+Ash                     User Defined      0.S   200.000  6000.000  B 120.00000 1
+ 1.10868000E+01 8.96607000E-03-4.56341000E-06 9.37809000E-10 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 1.10868000E+01 8.96607000E-03-4.56341000E-06    3
+ 9.37809000E-10 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+Ash_2                   User Defined      0.S   200.000  6000.000  B 120.00000 1
+ 1.10868000E+01 8.96607000E-03-4.56341000E-06 9.37809000E-10 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 1.10868000E+01 8.96607000E-03-4.56341000E-06    3
+ 9.37809000E-10 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+C2H4                    User Defined      0.G   200.000  6000.000  B  28.00000 1
+ 3.99182724E+00 1.04833908E-02-3.71721342E-06 5.94628366E-10-3.53630386E-14    2
+ 4.26865851E+03-2.69081762E-01 3.95920063E+00-7.57051373E-03 5.70989993E-05    3
+-6.91588352E-08 2.69884190E-11 5.08977598E+03 4.09730213E+00 6.31426266E+03    4
+
+C2H6                    User Defined      0.G   200.000  6000.000  B  30.00000 1
+ 4.04666411E+00 1.53538802E-02-5.47039485E-06 8.77826544E-10-5.23167531E-14    2
+-1.24473499E+04-9.68698313E-01 4.29142572E+00-5.50154901E-03 5.99438458E-05    3
+-7.08466469E-08 2.68685836E-11-1.15222056E+04 2.66678994E+00-1.00849652E+04    4
+
+C3H6                    User Defined      0.G   200.000  6000.000  B  42.00000 1
+ 6.03870234E+00 1.62963931E-02-5.82130800E-06 9.35936829E-10-5.58603143E-14    2
+-7.41715057E+02-8.43825992E+00 3.83464468E+00 3.29078952E-03 5.05228001E-05    3
+-6.66251176E-08 2.63707473E-11 7.88717123E+02 7.53408013E+00 2.40543339E+03    4
+
+CH4                     User Defined      0.G   200.000  6000.000  B  16.00000 1
+ 1.65326226E+00 1.00263099E-02-3.31661238E-06 5.36483138E-10-3.14696758E-14    2
+-1.00095936E+04 9.90506283E+00 5.14911468E+00-1.36622009E-02 4.91453921E-05    3
+-4.84246767E-08 1.66603441E-11-1.02465983E+04-4.63848842E+00-8.97226656E+03    4
+
+Char                    User Defined      0.S   200.000  6000.000  B  12.00000 1
+ 1.59828070E+00 1.43065097E-03-5.09435105E-07 8.64401302E-11-5.34349530E-15    2
+-7.45940284E+02-9.30332005E+00-3.03744539E-01 4.36036227E-03 1.98268825E-06    3
+-6.43472598E-09 2.99601320E-12-1.09458288E+02 1.08301475E+00 0.00000000E+00    4
+
+Char_2                  User Defined      0.S   200.000  6000.000  B  12.00000 1
+ 1.59828070E+00 1.43065097E-03-5.09435105E-07 8.64401302E-11-5.34349530E-15    2
+-7.45940284E+02-9.30332005E+00-3.03744539E-01 4.36036227E-03 1.98268825E-06    3
+-6.43472598E-09 2.99601320E-12-1.09458288E+02 1.08301475E+00 0.00000000E+00    4
+
+CO                      User Defined      0.G   200.000  6000.000  B  28.00000 1
+ 3.04848590E+00 1.35172810E-03-4.85794050E-07 7.88536440E-11-4.69807460E-15    2
+-1.42661170E+04 6.01709770E+00 3.57953350E+00-6.10353690E-04 1.01681430E-06    3
+ 9.07005860E-10-9.04424490E-13-1.43440860E+04 3.50840930E+00-1.32936280E+04    4
+
+CO2                     User Defined      0.G   200.000  6000.000  B  44.00000 1
+ 4.63651110E+00 2.74145690E-03-9.95897590E-07 1.60386660E-10-9.16198570E-15    2
+-4.90249040E+04-1.93489550E+00 2.35681300E+00 8.98412990E-03-7.12206320E-06    3
+ 2.45730080E-09-1.42885480E-13-4.83719710E+04 9.90090350E+00-4.73281050E+04    4
+
+H2                      User Defined      0.G   200.000  6000.000  B   2.00000 1
+ 2.93286575E+00 8.26608026E-04-1.46402364E-07 1.54100414E-11-6.88804800E-16    2
+-8.13065581E+02-1.02432865E+00 2.34433112E+00 7.98052075E-03-1.94781510E-05    3
+ 2.01572094E-08-7.37611761E-12-9.17935173E+02 6.83010238E-01 0.00000000E+00    4
+
+H2O                     User Defined      0.G   200.000  6000.000  B  18.00000 1
+ 2.67703890E+00 2.97318160E-03-7.73768890E-07 9.44335140E-11-4.26899910E-15    2
+-2.98858940E+04 6.88255000E+00 4.19863520E+00-2.03640170E-03 6.52034160E-06    3
+-5.48792690E-09 1.77196800E-12-3.02937260E+04-8.49009010E-01-2.90848170E+04    4
+
+H2S                     User Defined      0.G   200.000  6000.000  B  34.00000 1
+ 2.97879430E+00 3.59760372E-03-1.22803151E-06 1.96833209E-10-1.16716162E-14    2
+-3.51607638E+03 6.77921228E+00 4.12024455E+00-1.87907426E-03 8.21426650E-06    3
+-7.06425730E-09 2.14234860E-12-3.68215173E+03 1.53174068E+00-2.47759639E+03    4
+
+HCN                     User Defined      0.G   200.000  6000.000  B  27.00000 1
+ 3.80231648E+00 3.14630087E-03-1.06315727E-06 1.66185438E-10-9.79891962E-15    2
+ 1.42849502E+04 1.57501632E+00 2.25901199E+00 1.00510475E-02-1.33514567E-05    3
+ 1.00920479E-08-3.00880408E-12 1.45903166E+04 8.91631960E+00 1.56111424E+04    4
+
+Moisture                User Defined      0.S   273.150  6000.000  B  18.00000 1
+ 9.06000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 9.06000000E+00 0.00000000E+00 0.00000000E+00    3
+ 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00-3.43772513E+04    4
+
+N2                      User Defined      0.G   200.000  6000.000  B  28.00000 1
+ 2.95257637E+00 1.39690040E-03-4.92631603E-07 7.86010195E-11-4.60755204E-15    2
+-9.23948688E+02 5.87188762E+00 3.53100528E+00-1.23660988E-04-5.02999433E-07    3
+ 2.43530612E-09-1.40881235E-12-1.04697628E+03 2.96747038E+00 0.00000000E+00    4
+
+O2                      User Defined      0.G   200.000  6000.000  B  32.00000 1
+ 3.66096065E+00 6.56365811E-04-1.41149627E-07 2.05797935E-11-1.29913436E-15    2
+-1.21597718E+03 3.41536279E+00 3.78245636E+00-2.99673416E-03 9.84730201E-06    3
+-9.68129509E-09 3.24372837E-12-1.06394356E+03 3.65767573E+00 0.00000000E+00    4
+
+OIL                     User Defined      0.G   200.000  6000.000  B  92.00000 1
+ 1.39554638E+01 2.61958467E-02-9.49915916E-06 1.54347110E-09-9.28250660E-14    2
+ 2.14692490E+04-5.61060502E+01-1.65170412E+00 3.06548739E-02 8.75980641E-05    3
+-1.51283728E-07 6.67852920E-11 2.73123387E+04 3.29196783E+01 2.86888853E+04    4
+
+PAH                     User Defined      0.G   200.000  6000.000  B 332.00000 1
+ 3.66362791E+01 6.40568636E-02-2.35898765E-05 3.87302887E-09-2.34622400E-13    2
+ 1.83581667E+04-1.83103895E+02-3.43656045E+00 1.04563338E-01 9.86369010E-05    3
+-2.14123810E-07 9.51018040E-11 3.28674342E+04 4.09211169E+01 3.69835384E+04    4
+
+SO3                     User Defined      0.G   200.000  6000.000  B  80.00000 1
+ 7.29677572E+00 2.73576437E-03-1.06377755E-06 1.80776031E-10-1.12077527E-14    2
+-5.03096739E+04-1.24246659E+01 2.37461122E+00 1.59543297E-02-1.26322543E-05    3
+ 2.81827264E-09 6.23371547E-13-4.89269231E+04 1.31043046E+01-4.76155540E+04    4
+
+Soot                    User Defined      0.G   200.000  6000.000  B 300.00000 1
+-7.94079328E-01 8.09779756E-03-6.56398654E-06 1.84781958E-09 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00-7.94079328E-01 8.09779756E-03-6.56398654E-06    3
+ 1.84781958E-09 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    4
+
+Tar                     User Defined      0.G   200.000  6000.000  B 346.10000 1
+ 0.00000000E+00 1.75710000E-01 0.00000000E+00 0.00000000E+00 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 0.00000000E+00 1.75710000E-01 0.00000000E+00    3
+ 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00-9.28890000E+04    4
+
+Volatiles               User Defined      0.S   200.000  6000.000  B  28.40000 1
+ 4.68000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00    2
+ 0.00000000E+00 0.00000000E+00 4.68000000E+00 0.00000000E+00 0.00000000E+00    3
+ 0.00000000E+00 0.00000000E+00 0.00000000E+00 0.00000000E+00-1.89440000E+04    4
+

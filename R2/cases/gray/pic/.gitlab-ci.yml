@@ -1,0 +1,298 @@
+image: mwm126/anaconda3:latest
+
+stages:
+  - build
+  - package
+  - deploy
+  - test
+
+variables:
+  CMAKE_OPTS: -DENABLE_CTEST=ON
+              -DCMAKE_Fortran_FLAGS="-fcheck=all -Wuninitialized"
+
+.stage:build: &stage_build
+  stage: build
+  except:
+    - schedules
+
+.stage:test: &stage_test
+  stage: test
+  only:
+    - schedules
+
+
+clean:docker:
+  script:
+    - conda build purge
+    - conda clean --all -y
+  <<: *stage_build
+  when: manual
+  tags:
+    - docker
+
+
+build:solver-linux:
+  script:
+    - conda build conda/mfix-solver-linux64 --output-folder dist -c anaconda
+  <<: *stage_build
+  artifacts:
+    name: "$CI_JOB_NAME"
+    expire_in: 1 week
+    paths:
+      - dist/linux-64/mfix*
+  tags:
+    - docker
+
+
+build:solver-mingw-cross:
+  variables:
+    CXX: x86_64-w64-mingw32-g++-posix
+    FC: x86_64-w64-mingw32-gfortran-posix
+  script:
+    - cmake .
+            -DENABLE_CROW=ON
+            -DCMAKE_Fortran_COMPILER=$FC
+            -DCMAKE_CXX_COMPILER=$CXX
+            -DBOOST_ROOT=/mingw
+            -DCMAKE_EXE_LINKER_FLAGS="-static"
+    - make
+    - mv mfixsolver mfixsolver.exe
+  <<: *stage_build
+  artifacts:
+    name: "$CI_JOB_NAME"
+    expire_in: 1 week
+    paths:
+      - mfixsolver.exe
+  image: mwm126/mingw
+  tags:
+    - docker
+
+
+build:solver-osx-cross:
+  variables:
+    AR: /root/osxcross/target/bin/x86_64-apple-darwin15-ar
+    CXX: x86_64-apple-darwin15-clang++-libc++
+    FC: x86_64-apple-darwin15-gfortran
+    RANLIB: /root/osxcross/target/bin/x86_64-apple-darwin15-ranlib
+  script:
+    - cmake .
+            -DENABLE_CROW=ON
+            -DCMAKE_Fortran_COMPILER=$FC
+            -DCMAKE_CXX_COMPILER=$CXX
+            -DCMAKE_AR=$AR
+            -DCMAKE_RANLIB=$RANLIB
+            -DBoost_INCLUDE_DIR=/opt/boost/include
+            -DCMAKE_EXE_LINKER_FLAGS="-static-libgfortran"
+    - make
+    - mv mfixsolver mfixsolver-osx
+  <<: *stage_build
+  artifacts:
+    name: "$CI_JOB_NAME"
+    expire_in: 1 week
+    paths:
+      - mfixsolver-osx
+  image: osxcross
+  allow_failure: true
+  tags:
+    - docker-mac
+
+
+.ctest:other_compiler: &othercompiler_def
+  script:
+    - module load cmake "$MODULE"
+    - $FC --version
+    - cmake -S .
+            -B build
+            -DCMAKE_Fortran_COMPILER="$FC"
+            -DCMAKE_BUILD_TYPE=Debug
+            -DENABLE_OpenMP=1
+    - make -C build
+    - pushd build
+    - ctest -R tutorials__dem__fluid_bed_2d
+  tags:
+    - joule
+  <<: *stage_test
+
+ctest:pgi:
+  variables:
+    FC: pgfortran
+    MODULE: pgi
+  <<: *othercompiler_def
+
+ctest:intel:
+  variables:
+    FC: ifort
+    MODULE: intel
+  <<: *othercompiler_def
+
+
+ctest:netcdf:
+  variables:
+    TUTORIAL:   "tutorials/dem/fluid_bed_2d"
+  script:
+    - cmake -S .
+            -B $TUTORIAL
+            -DENABLE_NETCDF=YES
+            "$CMAKE_OPTS"
+    - make -C $TUTORIAL
+    - cd $TUTORIAL
+    - ./mfixsolver -f fluid_bed_dem_2d.mfx
+  tags:
+    - docker
+  <<: *stage_test
+
+
+.ctest: &ctest_def
+  script:
+    - cmake -S .
+            -B build
+            "$CMAKE_OPTS"
+            -DENABLE_MPI=$DMP
+            -DENABLE_OpenMP=$SMP
+    - make -C build
+    - pushd build
+    - ctest -L $SUITE -E benchmark --timeout $TIMEOUT
+  tags:
+    - docker
+  <<: *stage_test
+
+ctest:serial:
+  variables:
+    DMP: "NO"
+    SMP: "NO"
+    SUITE: "SERIAL"
+    TIMEOUT: "1000"
+  <<: *ctest_def
+
+ctest:dmp:
+  variables:
+    DMP: "YES"
+    SMP: "NO"
+    SUITE: "DMP"
+    TIMEOUT: "3000"
+  <<: *ctest_def
+
+ctest:smp:
+  variables:
+    DMP: "NO"
+    SMP: "YES"
+    SUITE: "SMP"
+    TIMEOUT: "100"
+  script:
+  <<: *ctest_def
+
+# CTests with label FAILURE are currently failing
+ctest:failing:
+  variables:
+    DMP: "YES"
+    SMP: "NO"
+    SUITE: "FAILING"
+    TIMEOUT: "300"
+  allow_failure: true
+  <<: *ctest_def
+
+
+ctest:tutorials:
+  variables:
+    TEST_ENV_PATH: "/tmp/test-env"
+  script:
+    - rm -rf $TEST_ENV_PATH
+    - conda env create -p $TEST_ENV_PATH -f conda/environment-linux64.yml
+    - source activate $TEST_ENV_PATH
+    - /opt/conda/bin/cmake -S .
+                           -B build
+                           "$CMAKE_OPTS"
+                           -DENABLE_MPI=0
+                           -DENABLE_OpenMP=0
+    - make -C build
+    - pushd build
+    - ctest -L TUTORIAL --timeout 300
+  tags:
+    - docker
+  <<: *stage_test
+
+
+package:mfix-noarch:
+  variables:
+    CONDA_BLD: "/home/mfixuser/conda-bld"
+  script:
+    - conda build conda/mfix --output-folder dist -c mfix -c dist
+
+    - mkdir output
+
+    - conda build conda/mfix-solver-cross-win64 --output-folder output
+    - conda convert -p win-64 output/linux-64/mfix-solver* -o dist
+    - rm -f output/linux-64/mfix-solver*
+
+    - conda build conda/mfix-solver-cross-osx64 --output-folder output || exit 0
+    - conda convert -p osx-64 output/linux-64/mfix-solver* -o dist || exit 0
+    - rm -f output/linux-64/mfix-solver*
+
+  stage: package
+  except:
+    - schedules
+  artifacts:
+    name: "$CI_JOB_NAME"
+    expire_in: 1 week
+    paths:
+      - dist/linux-64/mfix*
+      - dist/noarch/mfix*
+      - dist/osx-64/mfix*
+      - dist/win-64/mfix*
+      - MFiX-User_Guide.pdf
+  dependencies:
+    - build:solver-linux
+    - build:solver-mingw-cross
+    - build:solver-osx-cross
+  tags:
+    - docker
+
+
+deploy:staging:
+  variables:
+    HTTP_HOME: "/home/gitlab-runner/html"
+    DOC_HOME: "${HTTP_HOME}/doc/mfix/develop"
+    REPO_HOME: "${HTTP_HOME}/conda/devel"
+    SOURCE_HOME: "${HTTP_HOME}/source"
+  script:
+    # docs
+    - rm -rf ${DOC_HOME}
+    - mkdir -p ${DOC_HOME}
+    - tar xf dist/noarch/mfix-doc* -C ${DOC_HOME} share/mfix/doc/html/ --strip-components=4
+    - mv MFiX-User_Guide.pdf ${DOC_HOME}
+
+    # source
+    - rm -f ${SOURCE_HOME}/mfix-${VERSION}.tar.gz
+    - VERSION=$(git describe --abbrev=0)
+    - git archive -o ${SOURCE_HOME}/mfix-${VERSION}.tar.gz HEAD
+
+    # conda packages
+    - rm -rf ${REPO_HOME}/*/mfix*
+    - rsync -av --exclude="mfix-solver*" dist/ ${REPO_HOME}/
+    - aws s3 cp s3://mwm126-conda/ ${REPO_HOME}/ --recursive
+    - conda index ${REPO_HOME}
+  stage: deploy
+  except:
+    - schedules
+  only:
+    - develop
+    - tags
+  dependencies:
+    - package:mfix-noarch
+    - userguide:pdf
+  tags:
+    - staging
+
+
+userguide:pdf:
+  script:
+    - make -C doc/user_manual html latexpdf
+    - mv doc/user_manual/_build/latex/MFiX-User_Guide.pdf .
+  <<: *stage_build
+  artifacts:
+    name: "$CI_JOB_NAME"
+    expire_in: 1 week
+    paths:
+      - MFiX-User_Guide.pdf
+  tags:
+    - docker
