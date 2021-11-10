@@ -4,7 +4,7 @@ MFiX suite with spectral models (Line by Line HITRAN) for thermal radiation
 
 
 If you publish a work that uses this code then cite the following paper 
-
+''
 @article{kotteda2021study,
   title={Study the thermal radiation effects in gas-solid flows with gray and non-gray P1 models implemented in MFiX},
   author={Kotteda, VM Krushnarao and Stoellinger, Michael},
@@ -14,3 +14,4 @@ If you publish a work that uses this code then cite the following paper
   year={2021},
   publisher={Elsevier}
 }
+''
